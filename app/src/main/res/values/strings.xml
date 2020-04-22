@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">小派SDK</string>
+    <string name="configuring_message">正在配網中。。。</string>
+    <string name="text_test_code_note">按下测试，如果匹配目标（电视或空调）通电或嘟嘟声，意味着数据匹配成功。否则，请更改下一个</string>
+    <string name="text_previous_group">上一组</string>
+    <string name="text_next_group">下一组</string>
+    <string name="text_test">测试</string>
+    <string name="text_request_fail">请求失败！</string>
+    <string name="text_ac">空调</string>
+    <string name="text_tv">电视</string>
+    <string name="text_stb">机顶盒</string>
+    <string name="text_iptv">安卓盒子</string>
+    <string name="text_finish">完成</string>
+    <string name="text_edit">编辑</string>
+    <string name="text_learn_again">重新录制编码</string>
+    <string name="text_create_code_again">重新创建编码</string>
+    <string name="text_edit_key">编辑按键</string>
+    <string name="text_learn">录制实体按键</string>
+    <string name="text_create_code">创建编码按钮</string>
+    <string name="text_delete">删除</string>
+</resources>

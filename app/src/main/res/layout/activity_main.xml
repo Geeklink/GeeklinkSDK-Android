@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    tools:context=".ui.MainActivity">
+
+    <com.example.helloworld.view.CommonToolbar
+        android:elevation="4dp" tools:targetApi="lollipop"
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:viewbar_left_isvisible="true"
+        app:viewbar_right_Text="设备列表"
+        app:viewbar_right_TextColor="@android:color/holo_blue_light"
+        app:viewbar_title="主页"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+        <EditText
+            android:id="@+id/ssidEdt"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:maxLines="1"
+            android:gravity="center"
+            android:hint="wifi名字"/>
+
+        <EditText
+            android:id="@+id/pswEdt"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:inputType="text"
+            android:maxLines="1"
+            android:gravity="center"
+            android:hint="wifi密码"
+            android:text=""/>
+
+    <Button
+        android:layout_width="280dp"
+        android:layout_height="40dp"
+        android:textAllCaps="false"
+        android:layout_margin="20dp"
+        android:text="开始配网"
+        android:onClick="buttonWasPressed" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="1.如果获取不到Wi-Fi信息，请打开应用的位置权限和手机的GPS定位开关。\n 2.设备暂时不支持5G频段Wi-Fi."/>
+
+    </LinearLayout>
+
+</LinearLayout>

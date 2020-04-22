@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <declare-styleable name="SelectorImageView">
+        <attr name="norBackGround" format="reference"/>
+        <attr name="pressBackGround" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="titlebar">
+        <attr name="viewbarbg" format="reference|color" />
+        <attr name="viewbar_title" format="string" />
+        <attr name="viewbar_title_TextSize" format="dimension" />
+        <attr name="viewbar_title_background" format="reference|color" />
+        <attr name="viewbar_title_isvisible" format="boolean" />
+        <attr name="viewbar_title_Color" format="color" />
+        <attr name="viewbar_left_TextColor" format="color" />
+        <attr name="viewbar_left_Background" format="reference|color" />
+        <attr name="viewbar_left_Text" format="string" />
+        <attr name="viewbar_left_isvisible" format="boolean" />
+        <attr name="viewbar_left_TextSize" format="dimension" />
+        <attr name="viewbar_right_TextColor" format="color" />
+        <attr name="viewbar_right_Background" format="reference|color" />
+        <attr name="viewbar_right_Text" format="string" />
+        <attr name="viewbar_right_isvisible" format="boolean" />
+        <attr name="viewbar_right_TextSize" format="dimension" />
+        <attr name="right_ImgBackground" format="reference|color" />
+        <attr name="right_Imgisvisible" format="boolean" />
+        <attr name="right_bg_hight" format="dimension" />
+        <attr name="right_bg_width" format="dimension" />
+        <attr name="edit_button" format="boolean" />
+        <attr name="edit_button_Text" format="string" />
+        <attr name="edit_button_TextColor" format="color" />
+    </declare-styleable>
+</resources>
