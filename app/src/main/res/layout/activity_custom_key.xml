@@ -15,7 +15,7 @@
         android:elevation="4dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:viewbar_left_isvisible="true"
-        app:viewbar_title="自定义"
+        app:viewbar_title="@string/text_custom"
         app:right_ImgBackground="@drawable/icon_add_scene"
         app:right_Imgisvisible="true"
         app:viewbar_right_TextColor="@android:color/holo_blue_light"

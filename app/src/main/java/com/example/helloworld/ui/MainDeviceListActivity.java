@@ -57,8 +57,8 @@ public class MainDeviceListActivity extends AppCompatActivity {
             public void onItemClick(View view, final int position) {
                 super.onItemClick(view, position);
                 List<String> actions = new ArrayList<>();
-                actions.add("查看设备");
-                actions.add("删除");
+                actions.add(context.getString(R.string.text_dev_detail));
+                actions.add(context.getString(R.string.text_delete));
                 DialogUtils.showItemDialog(MainDeviceListActivity.this,actions,new OnItemClickListenerImp(){
                     @Override
                     public void onItemClick(View view, int pos) {

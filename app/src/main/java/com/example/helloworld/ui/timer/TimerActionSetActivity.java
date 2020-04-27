@@ -66,9 +66,9 @@ public class TimerActionSetActivity extends AppCompatActivity implements OnGetSu
                 if(subDevInfo.mMainType == DeviceMainType.DATABASE){
                     holder.setText(R.id.stateTv," subId : " +subDevInfo.mSubId + "  fileId : " + subDevInfo.mFileId);
                 }else{
-                    holder.setText(R.id.stateTv," subId : " +subDevInfo.mSubId + "    " + subDevInfo.mKeyIdList.size() + "个按键");
+                    holder.setText(R.id.stateTv," subId : " +subDevInfo.mSubId + "    " + subDevInfo.mKeyIdList.size() + context.getString(R.string.text_keys_num));
                 }
-                holder.setText(R.id.nameTv, DeviceUtil.getDeviceType(subDevInfo.mMainType,subDevInfo.mSubType));
+                holder.setText(R.id.nameTv, DeviceUtil.getDeviceType(context,subDevInfo.mMainType,subDevInfo.mSubType));
             }
         };
         recyclerView.setAdapter(adapter);
@@ -83,7 +83,7 @@ public class TimerActionSetActivity extends AppCompatActivity implements OnGetSu
                     if(mSubDeviceList.get(position).mKeyIdList.size() > 0){
                         getDeviceIrCode(mSubDeviceList.get(position));
                     }else{
-                        Toast.makeText(context, "请先添加按键", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, context.getString(R.string.text_please_add_key_first), Toast.LENGTH_SHORT).show();
                     }
                 }
 

@@ -15,7 +15,7 @@
         android:elevation="4dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:viewbar_left_isvisible="true"
-        app:viewbar_title="子设备详情"
+        app:viewbar_title="@string/text_sub_dev_detail"
         tools:targetApi="lollipop" />
     <TextView
         android:id="@+id/stateTv"
@@ -38,7 +38,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="开关"/>
+            android:text="@string/text_switch"/>
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
@@ -58,7 +58,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="模式"/>
+            android:text="@string/text_mode"/>
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
@@ -78,7 +78,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="风向"/>
+            android:text="@string/text_wind_dir"/>
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
@@ -98,7 +98,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="风速"/>
+            android:text="@string/text_wind_speed"/>
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
@@ -118,7 +118,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="温度+"/>
+            android:text="@string/text_temp_plus"/>
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
@@ -138,7 +138,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="温度-"/>
+            android:text="@string/text_temp_minus"/>
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"

@@ -130,7 +130,7 @@ public class TimerListActivity extends AppCompatActivity implements OnGetSmartPi
             mDatas.addAll(timerList);
             adapter.notifyDataSetChanged();
         }else{
-            Toast.makeText(this, "获取数据失败！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, context.getString(R.string.text_get_data_failed), Toast.LENGTH_SHORT).show();
         }
     }
 

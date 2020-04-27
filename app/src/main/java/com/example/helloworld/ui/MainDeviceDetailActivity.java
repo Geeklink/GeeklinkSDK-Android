@@ -122,7 +122,7 @@ public class MainDeviceDetailActivity extends AppCompatActivity implements View.
 //        GlobalData.CLOUD_IR_2019_CTRL_MAC = glDevStateInfo.mMac;
 
         if (glDevStateInfo.mState == DevConnectState.LOCAL){
-            stateTv.setText("本地在线");
+            stateTv.setText(context.getString(R.string.text_local_online));
             firewareCurVerLayout.setVisibility(View.VISIBLE);
             firewareLatestVerLayout.setVisibility(View.VISIBLE);
             macLayout.setVisibility(View.VISIBLE);
@@ -134,7 +134,7 @@ public class MainDeviceDetailActivity extends AppCompatActivity implements View.
             firewareUpgradeBtn.setVisibility(View.VISIBLE);
             localIrCodeBtn.setVisibility(View.VISIBLE);
         }else if(glDevStateInfo.mState == DevConnectState.REMOTE){
-            stateTv.setText("远程在线");
+            stateTv.setText(context.getString(R.string.text_remote_online));
             firewareCurVerLayout.setVisibility(View.VISIBLE);
             firewareLatestVerLayout.setVisibility(View.VISIBLE);
             macLayout.setVisibility(View.VISIBLE);
@@ -146,7 +146,7 @@ public class MainDeviceDetailActivity extends AppCompatActivity implements View.
             firewareUpgradeBtn.setVisibility(View.VISIBLE);
             localIrCodeBtn.setVisibility(View.VISIBLE);
         }else{
-            stateTv.setText("离线");
+            stateTv.setText(context.getString(R.string.text_offline));
             firewareCurVerLayout.setVisibility(View.GONE);
             firewareLatestVerLayout.setVisibility(View.GONE);
             macLayout.setVisibility(View.GONE);
@@ -187,7 +187,7 @@ public class MainDeviceDetailActivity extends AppCompatActivity implements View.
                     ApiManager.getInstance().upgradeDeviceWithMd5(md5);
                     ApiManager.getInstance().setDeviceUpgradeListener(this);
                 }else{
-                    Toast.makeText(context, "已是最新固件，无需更新。", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.text_fireware_update_un_availeable), Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.sunDevBtn:
@@ -217,10 +217,10 @@ public class MainDeviceDetailActivity extends AppCompatActivity implements View.
     @Override
     public void onSetDevice(StateType state, ActionFullType action, DiscoverDeviceInfo discoverDeviceInfo) {
         if(state == StateType.OK){
-            Toast.makeText(context, "删除成功。", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.text_operate_successed), Toast.LENGTH_SHORT).show();
             finish();
         }else{
-            Toast.makeText(context, "删除失败！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.text_operate_failed), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -229,9 +229,9 @@ public class MainDeviceDetailActivity extends AppCompatActivity implements View.
     public void onDeviceUpgrade(StateType state, String md5, String action) {
         if(state == StateType.OK
          && action.equals("update")){
-            new AlertDialog.Builder(context).setTitle("提示")
-                    .setMessage("设备升级大概需要1分钟，请勿断电")
-                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            new AlertDialog.Builder(context).setTitle(context.getString(R.string.text_promt))
+                    .setMessage(context.getString(R.string.text_fireware_update_note))
+                    .setPositiveButton(context.getString(R.string.text_confirm), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();

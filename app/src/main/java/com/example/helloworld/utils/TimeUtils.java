@@ -19,7 +19,7 @@ public class TimeUtils {
 
     public static String formatWeek(byte currentDayOfWeek, Context context) {
         if (currentDayOfWeek == 127) {
-            return "每天";
+            return context.getString(R.string.text_every_day);
         }
         boolean monday = false;
         boolean tuesday = false;
@@ -56,33 +56,33 @@ public class TimeUtils {
             sunday = true;
         }
         if (monday && tuesday && wednesday && thursday && friday && !satuarday && !sunday) {
-            return "工作日";
+            return context.getString(R.string.text_work_day);
         } else if (!monday && !tuesday && !wednesday && !thursday && !friday && satuarday && sunday) {
-            return "周末";
+            return context.getString(R.string.text_weekend);
         } else if (!monday && !tuesday && !wednesday && !thursday && !friday && !satuarday && !sunday) {
-            return "一次";
+            return context.getString(R.string.text_once_time);
         } else {
             StringBuffer sb = new StringBuffer();
             if (monday) {
-                sb.append("周一").append(" ");
+                sb.append(context.getString(R.string.text_mon)).append(" ");
             }
             if (tuesday) {
-                sb.append("周二").append(" ");
+                sb.append(context.getString(R.string.text_tues)).append(" ");
             }
             if (wednesday) {
-                sb.append(("周三")).append(" ");
+                sb.append(context.getString(R.string.text_weds)).append(" ");
             }
             if (thursday) {
-                sb.append(("周四")).append(" ");
+                sb.append(context.getString(R.string.text_thurs)).append(" ");
             }
             if (friday) {
-                sb.append(("周五")).append(" ");
+                sb.append(context.getString(R.string.text_fri)).append(" ");
             }
             if (satuarday) {
-                sb.append(("周六")).append(" ");
+                sb.append(context.getString(R.string.text_satur)).append(" ");
             }
             if (sunday) {
-                sb.append(("周日"));
+                sb.append(context.getString(R.string.text_sun));
             }
 
             return sb.toString();

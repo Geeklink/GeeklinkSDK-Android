@@ -14,7 +14,7 @@
         android:background="@color/colorPrimary"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:viewbar_left_isvisible="true"
-        app:viewbar_title="设备列表"/>
+        app:viewbar_title="@string/text_device_list"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

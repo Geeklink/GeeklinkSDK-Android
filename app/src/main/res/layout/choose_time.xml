@@ -15,7 +15,7 @@
         android:background="@color/colorPrimary"
         app:layout_collapseMode="pin"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:viewbar_title="设置时区" />
+        app:viewbar_title="@string/text_timezone_setting" />
 
 
 

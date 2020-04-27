@@ -108,7 +108,7 @@ public class LocalIrCodeActivity extends AppCompatActivity implements OnDeviceEn
             }
         });
 
-        toolbar.setMainTitle("红外码读取和发送");
+        toolbar.setMainTitle(context.getString(R.string.text_local_entry_code));
         initData();
 
     }
@@ -116,8 +116,8 @@ public class LocalIrCodeActivity extends AppCompatActivity implements OnDeviceEn
 
     private void startStudyKeyCode(){
         if(alertDialog == null){
-            alertDialog = new AlertDialog.Builder(context).setMessage("请在20秒内将红外遥控器对准主机并且按下遥控器按键")
-                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            alertDialog = new AlertDialog.Builder(context).setMessage(context.getString(R.string.text_study_code_notes))
+                    .setNegativeButton(context.getString(R.string.text_cancel), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -147,7 +147,7 @@ public class LocalIrCodeActivity extends AppCompatActivity implements OnDeviceEn
     @Override
     public void onCotrolDevice(StateType state, String md5, int deviceSubId) {
         if(state == StateType.OK){
-            Toast.makeText(context, "控制成功！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.text_operate_successed), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -173,9 +173,9 @@ public class LocalIrCodeActivity extends AppCompatActivity implements OnDeviceEn
                 adapter.notifyDataSetChanged();
                 SharePrefUtil.saveString(context,"IrCodeInfoStr",new Gson().toJson(IrCodeList));
             }
-            Toast.makeText(context, "操作成功！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.text_operate_successed), Toast.LENGTH_SHORT).show();
         }else{
-            Toast.makeText(context, "操作失败！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.text_operate_failed), Toast.LENGTH_SHORT).show();
         }
 
     }

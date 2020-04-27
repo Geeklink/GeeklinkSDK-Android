@@ -114,16 +114,16 @@ public class TimerInfoSetActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void onItemClick(View view, final int position) {
                 super.onItemClick(view, position);
-                new AlertDialog.Builder(context).setTitle("提示")
-                        .setMessage("确定要删除此任务吗？")
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                new AlertDialog.Builder(context).setTitle(context.getString(R.string.text_promt))
+                        .setMessage(context.getString(R.string.text_sure_delete_this_action))
+                        .setPositiveButton(context.getString(R.string.text_confirm), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                     timerFull.mActionList.remove(position);
                                     getAction();
                             }
                         })
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(context.getString(R.string.text_cancel), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
@@ -176,7 +176,7 @@ public class TimerInfoSetActivity extends AppCompatActivity implements View.OnCl
                 break;
             case R.id.addActionBtn:
                 if(actionInfos.size() == 5){
-                    Toast.makeText(context, "最多添加5个", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.text_max_num_tip), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 GlobalData.smartPiTimerFull = timerFull;
@@ -185,15 +185,15 @@ public class TimerInfoSetActivity extends AppCompatActivity implements View.OnCl
                 startActivityForResult(intent, 10);
                 break;
             case R.id.del_btn:
-                new AlertDialog.Builder(context).setTitle("提示")
-                        .setMessage("确定删除此定时吗？")
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                new AlertDialog.Builder(context).setTitle(context.getString(R.string.text_promt))
+                        .setMessage(context.getString(R.string.text_delete_timer_tip))
+                        .setPositiveButton(context.getString(R.string.text_confirm), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 ApiManager.getInstance().setActionTimerInfoWithMd5(md5,SingleTimerActionType.DELETE,timerFull);
                             }
                         })
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(context.getString(R.string.text_cancel), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
@@ -214,11 +214,11 @@ public class TimerInfoSetActivity extends AppCompatActivity implements View.OnCl
     public void rightClick() {
         String name = timerName.getText().toString().trim();
         if (TextUtils.isEmpty(name)) {
-            Toast.makeText(context, "请输入名称", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.text_please_input_name), Toast.LENGTH_SHORT).show();
             return;
         }
         if(name.getBytes().length > 24){
-            Toast.makeText(context, "字数过长，请重新输入", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.text_out_of_limit), Toast.LENGTH_SHORT).show();
             return;
         }
         SingleTimerActionType actionType;
@@ -247,18 +247,18 @@ public class TimerInfoSetActivity extends AppCompatActivity implements View.OnCl
             actionTimeTv.setText(TimeUtils.formatTime(mTime));
             getAction();
         } else if(state == StateType.FULL_ERROR){
-            Toast.makeText(context, "数据已满！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.text_data_full), Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void onSetSmartPiTimer(StateType state, String md5, SingleTimerActionType action) {
         if(state == StateType.OK) {
-            Toast.makeText(context, "保存成功！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.text_save_successed), Toast.LENGTH_SHORT).show();
             setResult(RESULT_OK);
             finish();
         }else{
-            Toast.makeText(context, "数据保存失败！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.text_save_failed), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -287,49 +287,53 @@ public class TimerInfoSetActivity extends AppCompatActivity implements View.OnCl
             return "";
         }
         StringBuilder sb = new StringBuilder();
+        sb.append(context.getString(R.string.text_power))
+                .append(":");
         if (acStateInfo.mPower) {
-            sb.append("电源：开");
+            sb.append(context.getString(R.string.text_on));
         } else {
-            sb.append("电源：关");
+            sb.append(context.getString(R.string.text_off));
         }
-        sb.append(" ")
-                .append("温度：")
+        sb.append(" ").append(context.getString(R.string.text_temp))
+                .append(":")
                 .append(acStateInfo.mTemp)
                 .append("℃  ");
+        sb.append(" ").append(context.getString(R.string.text_wind_dir))
+                .append(":");
         if (acStateInfo.mDir == 1) {
-            sb.append("风向：风向1");
+            sb.append("1");
         } else if (acStateInfo.mDir == 2) {
-            sb.append("风向：风向2");
+            sb.append("2");
         } else if (acStateInfo.mDir == 3) {
-            sb.append("风向：风向3");
+            sb.append("3");
         } else if (acStateInfo.mDir == 4) {
-            sb.append("风向：风向4");
+            sb.append("4");
         } else {
-            sb.append("风向：扫风");
+            sb.append(context.getString(R.string.text_wind_dir_radom));
         }
 
-        sb.append(" ");
+        sb.append(" ").append(context.getString(R.string.text_wind_speed)).append(":");
         if (acStateInfo.mSpeed == 1) {
-            sb.append("风速：低");
+            sb.append(context.getString(R.string.text_low));
         } else if (acStateInfo.mDir == 2) {
-            sb.append("风速：中");
+            sb.append(context.getString(R.string.text_mid));
         } else if (acStateInfo.mDir == 3) {
-            sb.append("风速：高");
+            sb.append(context.getString(R.string.text_high));
         } else {
-            sb.append("风速：自动");
+            sb.append(context.getString(R.string.text_auto));
         }
 
-        sb.append(" ");
+        sb.append(" ").append(context.getString(R.string.text_mode)).append(":");
         if (acStateInfo.mMode == 1) {
-            sb.append("模式：制冷");
+            sb.append(context.getString(R.string.text_cold));
         } else if (acStateInfo.mDir == 2) {
-            sb.append("模式：除湿");
+            sb.append(context.getString(R.string.text_dry));
         } else if (acStateInfo.mDir == 3) {
-            sb.append("模式：送风");
+            sb.append(context.getString(R.string.text_cool_wind));
         } else if (acStateInfo.mDir == 4) {
-            sb.append("模式：制热");
+            sb.append(context.getString(R.string.text_heat));
         } else {
-            sb.append("模式：自动");
+            sb.append(context.getString(R.string.text_auto));
         }
         return sb.toString();
     }

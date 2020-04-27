@@ -14,7 +14,7 @@
         android:background="@color/colorPrimary"
         app:layout_collapseMode="pin"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:viewbar_title="定时列表"
+        app:viewbar_title="@string/text_timer_list"
         app:right_ImgBackground="@drawable/icon_add_scene"
         app:right_Imgisvisible="true"/>
 

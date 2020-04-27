@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -33,7 +32,7 @@ import java.util.TimeZone;
 public class TimezoneActivity extends AppCompatActivity {
     private Context context;
     private RecyclerView mListView;
-    private ZimeZone zimeZone;
+    private TimeZoneAdapter timeZoneAdapter;
     private SimpleDateFormat sdf;
     private String timezoneName[];
     private CommonToolbar topbar;
@@ -66,9 +65,9 @@ public class TimezoneActivity extends AppCompatActivity {
             sdf.setTimeZone(TimeZone.getTimeZone(GMTADD));
             mtime.add(sdf.format(d));
         }
-        zimeZone = new ZimeZone(context);
+        timeZoneAdapter = new TimeZoneAdapter(context);
         mListView.setLayoutManager(new LinearLayoutManager(context));
-        mListView.setAdapter(zimeZone);
+        mListView.setAdapter(timeZoneAdapter);
         mListView.addOnItemTouchListener(new RecyclerItemClickListener(context, mListView, new OnItemClickListenerImp() {
 
             @Override
@@ -130,10 +129,10 @@ public class TimezoneActivity extends AppCompatActivity {
     }
 
 
-    class ZimeZone extends CommonAdapter<String> {
+    class TimeZoneAdapter extends CommonAdapter<String> {
 
 
-        public ZimeZone(Context context) {
+        public TimeZoneAdapter(Context context) {
             super(context, R.layout.choose_time_item, mtime);
         }
 

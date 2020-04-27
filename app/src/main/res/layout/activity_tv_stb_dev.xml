@@ -15,7 +15,7 @@
         android:elevation="4dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:viewbar_left_isvisible="true"
-        app:viewbar_title="子设备详情"
+        app:viewbar_title="@string/text_sub_dev_detail"
         tools:targetApi="lollipop" />
 
     <androidx.recyclerview.widget.RecyclerView

@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements ConfigDevResult,O
                 requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION);
             }
         }
+
     }
 
 
@@ -201,9 +202,9 @@ public class MainActivity extends AppCompatActivity implements ConfigDevResult,O
         }
         switch (state){
             case OK:
-                new AlertDialog.Builder(context).setTitle("提示")
-                        .setMessage("配网成功！")
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                new AlertDialog.Builder(context).setTitle(context.getString(R.string.text_promt))
+                        .setMessage(context.getString(R.string.text_config_successed))
+                        .setPositiveButton(context.getString(R.string.text_confirm), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
@@ -211,9 +212,9 @@ public class MainActivity extends AppCompatActivity implements ConfigDevResult,O
                         }).create().show();
                 break;
             default:
-                new AlertDialog.Builder(context).setTitle("提示")
-                        .setMessage("配网失败！")
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                new AlertDialog.Builder(context).setTitle(context.getString(R.string.text_promt))
+                        .setMessage(context.getString(R.string.text_config_failed))
+                        .setPositiveButton(context.getString(R.string.text_confirm), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();

@@ -14,7 +14,7 @@
         android:elevation="4dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:viewbar_left_isvisible="true"
-        app:viewbar_title="添加子设备"
+        app:viewbar_title="@string/text_add_sub_dev"
         tools:targetApi="lollipop" />
     <TextView
         android:layout_width="match_parent"
@@ -22,7 +22,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="5dp"
         android:layout_marginStart="5dp"
-        android:text="请选择要添加的设备"/>
+        android:text="@string/text_please_select_device_type"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"

@@ -20,7 +20,7 @@
         android:layout_height="50dp"
         android:layout_gravity="bottom"
         android:layout_margin="5dp"
-        android:text="取消" />
+        android:text="@string/text_cancel" />
 
 </LinearLayout>
 

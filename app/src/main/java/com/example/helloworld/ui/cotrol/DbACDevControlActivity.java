@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -99,49 +98,53 @@ public class DbACDevControlActivity extends AppCompatActivity implements OnGetSu
             return;
         }
         StringBuilder sb = new StringBuilder();
+        sb.append(context.getString(R.string.text_power))
+                .append(":");
         if (acStateInfo.mPower) {
-            sb.append("电源：开");
+            sb.append(context.getString(R.string.text_on));
         } else {
-            sb.append("电源：关");
+            sb.append(context.getString(R.string.text_off));
         }
-        sb.append(" ")
-                .append("温度：")
+        sb.append(" ").append(context.getString(R.string.text_temp))
+                .append(":")
                 .append(acStateInfo.mTemp)
                 .append("℃  ");
+        sb.append(" ").append(context.getString(R.string.text_wind_dir))
+                .append(":");
         if (acStateInfo.mDir == 1) {
-            sb.append("风向：风向1");
+            sb.append("1");
         } else if (acStateInfo.mDir == 2) {
-            sb.append("风向：风向2");
+            sb.append("2");
         } else if (acStateInfo.mDir == 3) {
-            sb.append("风向：风向3");
+            sb.append("3");
         } else if (acStateInfo.mDir == 4) {
-            sb.append("风向：风向4");
+            sb.append("4");
         } else {
-            sb.append("风向：扫风");
+            sb.append(context.getString(R.string.text_wind_dir_radom));
         }
 
-        sb.append(" ");
+        sb.append(" ").append(context.getString(R.string.text_wind_speed)).append(":");
         if (acStateInfo.mSpeed == 1) {
-            sb.append("风速：低");
+            sb.append(context.getString(R.string.text_low));
         } else if (acStateInfo.mDir == 2) {
-            sb.append("风速：中");
+            sb.append(context.getString(R.string.text_mid));
         } else if (acStateInfo.mDir == 3) {
-            sb.append("风速：高");
+            sb.append(context.getString(R.string.text_high));
         } else {
-            sb.append("风速：自动");
+            sb.append(context.getString(R.string.text_auto));
         }
 
-        sb.append(" ");
+        sb.append(" ").append(context.getString(R.string.text_mode)).append(":");
         if (acStateInfo.mMode == 1) {
-            sb.append("模式：制冷");
+            sb.append(context.getString(R.string.text_cold));
         } else if (acStateInfo.mDir == 2) {
-            sb.append("模式：除湿");
+            sb.append(context.getString(R.string.text_dry));
         } else if (acStateInfo.mDir == 3) {
-            sb.append("模式：送风");
+            sb.append(context.getString(R.string.text_cool_wind));
         } else if (acStateInfo.mDir == 4) {
-            sb.append("模式：制热");
+            sb.append(context.getString(R.string.text_heat));
         } else {
-            sb.append("模式：自动");
+            sb.append(context.getString(R.string.text_auto));
         }
         stateTv.setText(sb.toString());
     }
@@ -208,7 +211,7 @@ public class DbACDevControlActivity extends AppCompatActivity implements OnGetSu
     @Override
     public void onCotrolDevice(StateType state, String md5, int deviceSubId) {
         if (state == StateType.OK) {
-            Toast.makeText(context, "控制成功！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.text_operate_successed), Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -15,9 +15,9 @@
         android:background="@color/colorPrimary"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:viewbar_left_isvisible="true"
-        app:viewbar_right_Text="设备列表"
+        app:viewbar_right_Text="@string/text_device_list"
         app:viewbar_right_TextColor="@android:color/holo_blue_light"
-        app:viewbar_title="主页"/>
+        app:viewbar_title="@string/text_homepage"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,7 +30,7 @@
             android:layout_height="50dp"
             android:maxLines="1"
             android:gravity="center"
-            android:hint="wifi名字"/>
+            android:hint="@string/text_wifi_name"/>
 
         <EditText
             android:id="@+id/pswEdt"
@@ -39,7 +39,7 @@
             android:inputType="text"
             android:maxLines="1"
             android:gravity="center"
-            android:hint="wifi密码"
+            android:hint="@string/text_wifi_psw"
             android:text=""/>
 
     <Button
@@ -47,14 +47,14 @@
         android:layout_height="40dp"
         android:textAllCaps="false"
         android:layout_margin="20dp"
-        android:text="开始配网"
+        android:text="@string/text_go_config"
         android:onClick="buttonWasPressed" />
 
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="1.如果获取不到Wi-Fi信息，请打开应用的位置权限和手机的GPS定位开关。\n 2.设备暂时不支持5G频段Wi-Fi."/>
+            android:text="@string/text_config_notes"/>
 
     </LinearLayout>
 

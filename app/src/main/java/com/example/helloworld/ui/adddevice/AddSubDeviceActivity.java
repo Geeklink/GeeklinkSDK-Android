@@ -114,19 +114,11 @@ public class AddSubDeviceActivity extends AppCompatActivity implements OnSetSubD
     //小派分机添加的设备列表
     public void getYKBAddDevType() {
         addDeviceInfos.clear();
-        addDeviceInfos.add(new AddDeviceInfo("空调",AddDevType.AirCondition));//空调
-        addDeviceInfos.add(new AddDeviceInfo("电视",AddDevType.TV));//电视
-        addDeviceInfos.add(new AddDeviceInfo("机顶盒",AddDevType.STB));//机顶盒
-        addDeviceInfos.add(new AddDeviceInfo("安卓盒子",AddDevType.IPTV));//安卓盒子
-//        addDeviceInfos.add(new AddDeviceInfo("窗帘",AddDevType.Curtain));//窗帘
-//        addDeviceInfos.add(new AddDeviceInfo("风扇",AddDevType.Fan));//风扇
-//        addDeviceInfos.add(new AddDeviceInfo("音响",AddDevType.SoundBox));//音响
-//        addDeviceInfos.add(new AddDeviceInfo("遥控灯",AddDevType.Light));//遥控灯
-//        addDeviceInfos.add(new AddDeviceInfo("空调扇",AddDevType.AC_FAN));//空调扇
-//        addDeviceInfos.add(new AddDeviceInfo("投影仪",AddDevType.PROJECTOR));//投影仪
-//        addDeviceInfos.add(new AddDeviceInfo("空气净化器",AddDevType.AIR_PURIFIER));//空气净化器
-//        addDeviceInfos.add(new AddDeviceInfo("一键遥控",AddDevType.ONE_KEY));//一键遥控
-        addDeviceInfos.add(new AddDeviceInfo("自定义",AddDevType.Custom));//自定义
+        addDeviceInfos.add(new AddDeviceInfo(context.getString(R.string.text_ac),AddDevType.AirCondition));//空调
+        addDeviceInfos.add(new AddDeviceInfo(context.getString(R.string.text_tv),AddDevType.TV));//电视
+        addDeviceInfos.add(new AddDeviceInfo(context.getString(R.string.text_stb),AddDevType.STB));//机顶盒
+        addDeviceInfos.add(new AddDeviceInfo(context.getString(R.string.text_iptv),AddDevType.IPTV));//安卓盒子
+        addDeviceInfos.add(new AddDeviceInfo(context.getString(R.string.text_custom),AddDevType.Custom));//自定义
         adapter.notifyDataSetChanged();
     }
 

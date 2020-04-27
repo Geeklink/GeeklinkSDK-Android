@@ -112,7 +112,7 @@ public class DbTvStbDevControlActivity extends AppCompatActivity implements OnGe
     @Override
     public void onCotrolDevice(StateType state, String md5, int deviceSubId) {
         if(state == StateType.OK){
-            Toast.makeText(context, "控制成功！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.text_operate_successed), Toast.LENGTH_SHORT).show();
         }
     }
 

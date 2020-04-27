@@ -14,7 +14,7 @@
         android:elevation="4dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:viewbar_left_isvisible="true"
-        app:viewbar_title="设备详情"
+        app:viewbar_title="@string/text_dev_detail"
         tools:targetApi="lollipop" />
 
     <androidx.core.widget.NestedScrollView
@@ -48,7 +48,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
-                    android:text="在线状态"/>
+                    android:text="@string/text_online_status"/>
                 <TextView
                     android:id="@+id/stateTv"
                     android:layout_width="wrap_content"
@@ -71,7 +71,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
-                    android:text="固件版本"/>
+                    android:text="@string/text_fireware_version"/>
                 <TextView
                     android:id="@+id/firewareCurVerTv"
                     android:layout_width="wrap_content"
@@ -95,7 +95,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
-                    android:text="最新固件"/>
+                    android:text="@string/text_lastest_version"/>
                 <TextView
                     android:id="@+id/firewareLatestVerTv"
                     android:layout_width="wrap_content"
@@ -118,7 +118,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
-                    android:text="MAC地址"/>
+                    android:text="@string/text_mac_address"/>
                 <TextView
                     android:id="@+id/macTv"
                     android:layout_width="wrap_content"
@@ -140,7 +140,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
-                    android:text="IP地址"/>
+                    android:text="@string/text_ip_address"/>
                 <TextView
                     android:id="@+id/ipTv"
                     android:layout_width="wrap_content"
@@ -163,7 +163,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
                     android:layout_marginLeft="10dp"
-                    android:text="设置时区"/>
+                    android:text="@string/text_timezone_setting"/>
 
                 <TextView
                     android:id="@+id/timezoneTv"
@@ -192,7 +192,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
                     android:layout_marginLeft="10dp"
-                    android:text="子设备"/>
+                    android:text="@string/text_sub_dev"/>
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -213,7 +213,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
                     android:layout_marginLeft="10dp"
-                    android:text="定时列表"/>
+                    android:text="@string/text_timer_list"/>
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -236,7 +236,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
                     android:layout_marginLeft="10dp"
-                    android:text="固件更新"/>
+                    android:text="@string/text_fireware_update"/>
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -257,7 +257,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
                     android:layout_marginLeft="10dp"
-                    android:text="红外码读取和发送"/>
+                    android:text="@string/text_local_entry_code"/>
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -269,7 +269,7 @@
                 android:layout_width="200dp"
                 android:layout_height="40dp"
                 android:layout_margin="10dp"
-                android:text="删除" />
+                android:text="@string/text_delete" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

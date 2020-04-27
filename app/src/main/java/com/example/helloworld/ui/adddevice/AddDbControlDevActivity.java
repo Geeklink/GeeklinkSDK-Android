@@ -119,20 +119,20 @@ public class AddDbControlDevActivity extends AppCompatActivity implements OnSetS
     private void initData() {
         switch (addDevType){
             case AirCondition:
-                toolbar.setMainTitle("空调");
+                toolbar.setMainTitle(context.getString(R.string.text_ac));
                 databaseType = DatabaseType.AC;
                 break;
             case TV:
-                toolbar.setMainTitle("电视");
+                toolbar.setMainTitle(context.getString(R.string.text_tv));
                 databaseType = DatabaseType.TV;
                 break;
             case STB:
-                toolbar.setMainTitle("机顶盒");
+                toolbar.setMainTitle(context.getString(R.string.text_stb));
                 databaseType = DatabaseType.STB;
                 break;
             case IPTV:
             default:
-                toolbar.setMainTitle("IPTV");
+                toolbar.setMainTitle(context.getString(R.string.text_iptv));
                 databaseType = DatabaseType.IPTV;
                 break;
         }

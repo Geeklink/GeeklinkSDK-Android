@@ -65,11 +65,11 @@ public class SubDeviceListActivity extends AppCompatActivity implements View.OnC
         adapter = new CommonAdapter<SubDevInfo>(context,R.layout.item_sub_device,mSubDeviceList) {
             @Override
             public void convert(ViewHolder holder, SubDevInfo subDevInfo, int position) {
-                holder.setText(R.id.nameTv, DeviceUtil.getDeviceType(subDevInfo.mMainType,subDevInfo.mSubType));
+                holder.setText(R.id.nameTv, DeviceUtil.getDeviceType(context,subDevInfo.mMainType,subDevInfo.mSubType));
                 if(subDevInfo.mMainType == DeviceMainType.DATABASE){
                     holder.setText(R.id.stateTv," subId : " +subDevInfo.mSubId + "  fileId : " + subDevInfo.mFileId);
                 }else{
-                    holder.setText(R.id.stateTv," subId : " +subDevInfo.mSubId  + "    " + subDevInfo.mKeyIdList.size() + "个按键");
+                    holder.setText(R.id.stateTv," subId : " +subDevInfo.mSubId  + "    " + subDevInfo.mKeyIdList.size() + context.getString(R.string.text_keys_num));
                 }
             }
         };
@@ -79,8 +79,8 @@ public class SubDeviceListActivity extends AppCompatActivity implements View.OnC
             public void onItemClick(View view, final int position) {
                 super.onItemClick(view, position);
                 List<String> actions = new ArrayList<>();
-                actions.add("查看设备");
-                actions.add("删除");
+                actions.add(context.getString(R.string.text_dev_detail));
+                actions.add(context.getString(R.string.text_delete));
                 DialogUtils.showItemDialog(SubDeviceListActivity.this,actions,new OnItemClickListenerImp(){
                     @Override
                     public void onItemClick(View view, int pos) {
