@@ -5,15 +5,5 @@ public enum AddDevType {
     TV,
     STB,
     IPTV,
-//    Curtain,
-//    Fan,
-//    SoundBox,
-//    Light,
-//    AC_FAN,
-//    PROJECTOR,
-//    AIR_PURIFIER,
-//    ONE_KEY,
-//    GratiaSwitch,
-//    OptiLinkSwitch,
     Custom
 }

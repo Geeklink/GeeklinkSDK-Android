@@ -5,8 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -20,9 +18,8 @@ import com.example.helloworld.adapter.CommonAdapter;
 import com.example.helloworld.adapter.holder.ViewHolder;
 import com.example.helloworld.impl.OnItemClickListenerImp;
 import com.example.helloworld.impl.RecyclerItemClickListener;
-import com.example.helloworld.utils.DialogUtils;
 import com.example.helloworld.view.CommonToolbar;
-import com.geeklink.smartpisdk.api.ApiManager;
+import com.geeklink.smartpisdk.api.SmartPiApiManager;
 import com.geeklink.smartpisdk.bean.DBRCKeyInfo;
 import com.geeklink.smartpisdk.listener.OnControlDeviceListener;
 import com.geeklink.smartpisdk.listener.OnDeviceEntryCodeListener;
@@ -30,7 +27,6 @@ import com.geeklink.smartpisdk.listener.OnSetDeviceKeyListener;
 import com.geeklink.smartpisdk.utils.SharePrefUtil;
 import com.gl.ActionFullType;
 import com.gl.CarrierType;
-import com.gl.CustomType;
 import com.gl.DeviceMainType;
 import com.gl.KeyInfo;
 import com.gl.KeyStudyType;
@@ -42,7 +38,7 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LocalIrCodeActivity extends AppCompatActivity implements OnDeviceEntryCodeListener, OnControlDeviceListener , OnSetDeviceKeyListener {
+public class LocalIrCodeActivity extends AppCompatActivity implements OnDeviceEntryCodeListener, OnControlDeviceListener, OnSetDeviceKeyListener {
 
     private CommonToolbar toolbar;
     private Context context;
@@ -77,12 +73,12 @@ public class LocalIrCodeActivity extends AppCompatActivity implements OnDeviceEn
         Intent intent = getIntent();
         md5 = intent.getStringExtra("md5").toLowerCase();
 
-        subDevInfo = new SubDevInfo(subId, DeviceMainType.CUSTOM, CustomType.CUSTOM.ordinal(),0,0, CarrierType.CARRIER_38,new ArrayList<Integer>(),md5,"");
+        subDevInfo = new SubDevInfo(0, DeviceMainType.CUSTOM_DEV, null,0,0,0, CarrierType.CARRIER_38,new ArrayList<Integer>(),md5,"");
 
         toolbar = findViewById(R.id.title);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        adapter = new CommonAdapter<DBRCKeyInfo>(context,R.layout.item_add_sub_dev2, IrCodeList) {
+        adapter = new CommonAdapter<DBRCKeyInfo>(context, R.layout.item_add_sub_dev2, IrCodeList) {
             @Override
             public void convert(ViewHolder holder, DBRCKeyInfo myKeyInfo, int position) {
                 holder.setText(R.id.nameTv,myKeyInfo.getKeyName());
@@ -93,13 +89,12 @@ public class LocalIrCodeActivity extends AppCompatActivity implements OnDeviceEn
             @Override
             public void onItemClick(View view, int position) {
                 super.onItemClick(view, position);
-                ApiManager.getInstance().controlSubDeviceKeyWithMd5(md5,subDevInfo,null, IrCodeList.get(position).getKeyId());
+                SmartPiApiManager.getInstance().controlSubDeviceKeyWithMd5(md5,subDevInfo,null, IrCodeList.get(position).getKeyId());
             }
         }));
 
-        ApiManager.getInstance().setOnControlDeviceListener(this);
-        ApiManager.getInstance().setOnDeviceEntryCodeListener(this);
-        ApiManager.getInstance().setOnSetDeviceKeyListener(this);
+
+        setListener();
 
         toolbar.setRightClick(new CommonToolbar.RightListener() {
             @Override
@@ -107,10 +102,19 @@ public class LocalIrCodeActivity extends AppCompatActivity implements OnDeviceEn
                 startStudyKeyCode();
             }
         });
-
         toolbar.setMainTitle(context.getString(R.string.text_local_entry_code));
+
         initData();
 
+    }
+
+    private void setListener() {
+        //发码控制回调
+        SmartPiApiManager.getInstance().setOnControlDeviceListener(this);
+        //录码回调
+        SmartPiApiManager.getInstance().setOnDeviceEntryCodeListener(this);
+        //设置保存控制码回调
+        SmartPiApiManager.getInstance().setOnSetDeviceKeyListener(this);
     }
 
 
@@ -121,12 +125,14 @@ public class LocalIrCodeActivity extends AppCompatActivity implements OnDeviceEn
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            ApiManager.getInstance().getCodeFromDeviceWithMd5(md5, KeyStudyType.KEY_STUDY_CANCEL);
+                            //停止录码
+                            SmartPiApiManager.getInstance().getCodeFromDeviceWithMd5(md5, KeyStudyType.KEY_STUDY_CANCEL);
                         }
                     }).create();
         }
         alertDialog.show();
-        ApiManager.getInstance().getCodeFromDeviceWithMd5(md5, KeyStudyType.KEY_STUDY_IR);
+        //开始录码
+        SmartPiApiManager.getInstance().getCodeFromDeviceWithMd5(md5, KeyStudyType.KEY_STUDY_IR);
         handler.postDelayed(cancelDialogRunnable, 20 * 1000);
     }
 
@@ -158,7 +164,8 @@ public class LocalIrCodeActivity extends AppCompatActivity implements OnDeviceEn
                 alertDialog.dismiss();
                 irCode = code;
                 KeyInfo keyInfo = new KeyInfo(0,type.ordinal(),code);
-                ApiManager.getInstance().setSubDeviceKeyWithMd5(md5,subId, ActionFullType.INSERT,keyInfo);
+                //设置保存红外码
+                SmartPiApiManager.getInstance().setSubDeviceKeyWithMd5(md5,subId, ActionFullType.INSERT,keyInfo);
             }
 
         }

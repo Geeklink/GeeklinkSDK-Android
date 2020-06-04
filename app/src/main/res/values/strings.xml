@@ -54,7 +54,7 @@
     <string name="text_wind_dir">Wind direction</string>       
     <string name="text_wind_speed">Wind speed</string>       
     <string name="text_temp_plus">Temp +</string>       
-    <string name="text_temp_minus">Temp-</ string>       
+    <string name="text_temp_minus">Temp-</string>       
     <string name="text_cancel">Cancel</string>       
     <string name="text_click_to_send_code">Click to send</string>       
     <string name="text_repeat">Repeat:</string>       
@@ -108,4 +108,36 @@
     <string name="text_once_time">Once</string>       
     <string name="text_weekend">Weekend</string>       
     <string name="text_work_day">working Day</string>
-</ resources>
+    <string name="text_change_timing">Edit Timer</string>
+    <string name="text_minute_unit">Min</string>
+    <string name="dialog_input_name_error">The input cannot be empty </string>
+    <string name="text_number_limit">The number of input words is too long</string>
+    <string name="text_disinfection_records">Disinfection Record</string>
+    <string name="text_nono_history">No record yet</string>
+    <string name="text_disinfection_paused">Stop Disinfection </string>
+    <string name="text_detected_someone">Someone detected</string>
+    <string name="text_disinfection_ended">End disinfection, duration:%d minutes</string>
+    <string name="text_disinfection_opened"> Start Disinfection</string>
+    <string name="text_disinfection_canceled">Cancel Disinfection </string>
+    <string name="text_disinfection_resumed">Resume Disinfection </string>
+    <string name="text_device_child_lock">Child lock is opened,prohibited to start </string>
+    <string name="text_device_auto">Device Control</string>
+    <string name="text_timing_disinfection">Timed Start</string>
+    <string name="text_disinfection">Disinfection </string>
+    <string name="text_action_time">Start time</string>
+    <string name="text_disinfection_duration">Disinfection Duration</string>
+    <string name="text_repeat_time">Repeat</string>
+    <string name="text_undisinfect">尚未消过毒</string>
+    <string name="text_latest_disinfection_time">上次消毒：%1$s</string>
+    <string name="text_stop_disinfection">停止消毒</string>
+    <string name="text_disinfecting">正在消毒</string>
+    <string name="text_start_disinfection">开始消毒</string>
+    <string name="text_pause_disinfection">消毒暂停</string>
+    <string name="text_disinfection_for_15_mins">消毒15分钟</string>
+    <string name="text_disinfection_for_30_mins">消毒30分钟</string>
+    <string name="text_disinfection_for_60_mins">消毒60分钟</string>
+    <string name="text_delete_successed">删除成功！</string>
+    <string name="text_delete_failed">删除失败！</string>
+    <string name="text_control_failed">控制失败！</string>
+    <string name="text_child_lock">儿童锁</string>
+</resources>

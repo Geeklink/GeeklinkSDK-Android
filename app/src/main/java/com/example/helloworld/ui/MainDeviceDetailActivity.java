@@ -1,26 +1,24 @@
 package com.example.helloworld.ui;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.helloworld.R;
 import com.example.helloworld.ui.timer.TimerListActivity;
+import com.example.helloworld.utils.DeviceUtil;
 import com.geeklink.smartpisdk.api.ApiManager;
-import com.geeklink.smartpisdk.data.GlobalData;
 import com.geeklink.smartpisdk.listener.OnDeviceStateChangedListener;
 import com.geeklink.smartpisdk.listener.OnDeviceTimeZoneListener;
 import com.geeklink.smartpisdk.listener.OnDeviceUpgradeListener;
@@ -29,13 +27,13 @@ import com.geeklink.smartpisdk.utils.DevTimeZoneCalculateRunnable;
 import com.gl.ActionFullType;
 import com.gl.DevConnectState;
 import com.gl.DiscoverDeviceInfo;
+import com.gl.GeeklinkDevType;
 import com.gl.GlDevStateInfo;
 import com.gl.StateType;
 import com.gl.TimezoneAction;
-import com.google.gson.Gson;
 
 public class MainDeviceDetailActivity extends AppCompatActivity implements View.OnClickListener,
-        OnSetDeviceListener , OnDeviceUpgradeListener , OnDeviceStateChangedListener , OnDeviceTimeZoneListener {
+        OnSetDeviceListener, OnDeviceUpgradeListener, OnDeviceStateChangedListener, OnDeviceTimeZoneListener {
 
     private TextView nameTv;
     private TextView stateTv;
@@ -82,33 +80,25 @@ public class MainDeviceDetailActivity extends AppCompatActivity implements View.
         timezoneBtn = findViewById(R.id.timezoneBtn);
         timerListBtn = findViewById(R.id.timerListBtn);
         localIrCodeBtn = findViewById(R.id.localIrCodeBtn);
-
         macTv = findViewById(R.id.macTv);
         ipTv = findViewById(R.id.ipTv);
         firewareCurVerLayout = findViewById(R.id.firewareCurVerLayout);
         firewareLatestVerLayout = findViewById(R.id.firewareLatestVerLayout);
         macLayout = findViewById(R.id.macLayout);
         ipLayout = findViewById(R.id.ipLayout);
-
         firewareUpgradeBtn = findViewById(R.id.firewareUpgradeBtn);
-        firewareUpgradeBtn.setOnClickListener(this);
-
-        localIrCodeBtn.setOnClickListener(this);
-
         sunDevBtn = findViewById(R.id.sunDevBtn);
-        sunDevBtn.setOnClickListener(this);
+        delBtn = findViewById(R.id.delBtn);
 
+        firewareUpgradeBtn.setOnClickListener(this);
+        localIrCodeBtn.setOnClickListener(this);
+        sunDevBtn.setOnClickListener(this);
         timezoneBtn.setOnClickListener(this);
         timerListBtn.setOnClickListener(this);
-
-        delBtn = findViewById(R.id.delBtn);
         delBtn.setOnClickListener(this);
 
-        nameTv.setText(md5);
-
-        ApiManager.getInstance().setOnDeviceStateChangedListener(this);
-        ApiManager.getInstance().setOnDeviceTimeZoneListener(this);
-
+        //设置回调
+        setListener();
 
         //获取时区
         ApiManager.getInstance().toDeviceTimeZone(md5, TimezoneAction.TIMEZONE_ACTION_GET,1);
@@ -116,11 +106,24 @@ public class MainDeviceDetailActivity extends AppCompatActivity implements View.
         setupView();
     }
 
-    private synchronized void setupView(){
-        //获取设备状态
-        glDevStateInfo = ApiManager.getInstance().getDeviceStateInfo(md5.toLowerCase(),subId);
-//        GlobalData.CLOUD_IR_2019_CTRL_MAC = glDevStateInfo.mMac;
+    /**
+     * 设置接口回调监听
+     */
+    private void setListener() {
+        //设备状态改变回调（设备状态改变会自动回调）
+        ApiManager.getInstance().setOnDeviceStateChangedListener(this);
+        //设备时区设置回调
+        ApiManager.getInstance().setOnDeviceTimeZoneListener(this);
+        //设备设置回调（增删改）
+        ApiManager.getInstance().setSetDeviceListener(this);
+        //设备固件更新回调
+        ApiManager.getInstance().setDeviceUpgradeListener(this);
+    }
 
+    private void setupView(){
+        nameTv.setText(md5);
+        //获取设备状态
+        glDevStateInfo = ApiManager.getInstance().getDeviceStateInfo(md5.toLowerCase());
         if (glDevStateInfo.mState == DevConnectState.LOCAL){
             stateTv.setText(context.getString(R.string.text_local_online));
             firewareCurVerLayout.setVisibility(View.VISIBLE);
@@ -169,7 +172,7 @@ public class MainDeviceDetailActivity extends AppCompatActivity implements View.
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.delBtn:
-                ApiManager.getInstance().setSetDeviceListener(this);
+                //删除设备
                 ApiManager.getInstance().deleteMainDevice(md5);
                 break;
             case R.id.timerListBtn:
@@ -183,9 +186,9 @@ public class MainDeviceDetailActivity extends AppCompatActivity implements View.
                 startActivityForResult(intent2, 1101);
                 break;
             case R.id.firewareUpgradeBtn:
-                if(hasNewerVersion(glDevStateInfo.mCurVer,glDevStateInfo.mLatestVer)){
+                if(DeviceUtil.hasNewerVersion(glDevStateInfo.mCurVer,glDevStateInfo.mLatestVer)){
+                    //设备固件更新
                     ApiManager.getInstance().upgradeDeviceWithMd5(md5);
-                    ApiManager.getInstance().setDeviceUpgradeListener(this);
                 }else{
                     Toast.makeText(context, context.getString(R.string.text_fireware_update_un_availeable), Toast.LENGTH_SHORT).show();
                 }
@@ -240,22 +243,6 @@ public class MainDeviceDetailActivity extends AppCompatActivity implements View.
         }
     }
 
-    private  boolean hasNewerVersion(String version1, String version2) {
-        if (TextUtils.isEmpty(version1) || TextUtils.isEmpty(version1)) {
-            return false;
-        }
-        String[] v1 = version1.split("\\.");
-        String[] v2 = version2.split("\\.");
-
-        for (int i = 0; i < Math.max(v1.length, v2.length); i++) {
-            int num1 = i < v1.length ? Integer.parseInt(v1[i]) : 0;
-            int num2 = i < v2.length ? Integer.parseInt(v2[i]) : 0;
-            if (num1 < num2) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     @Override
     public void OnDeviceStateChanged(String md5) {

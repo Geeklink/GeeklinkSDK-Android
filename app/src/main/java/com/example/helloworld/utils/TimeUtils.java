@@ -1,25 +1,16 @@
 package com.example.helloworld.utils;
 
 import android.content.Context;
-import android.util.Log;
-import android.widget.CheckBox;
 
-import com.example.helloworld.R;
-
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
 
 public class TimeUtils {
 
 
     public static String formatWeek(byte currentDayOfWeek, Context context) {
         if (currentDayOfWeek == 127) {
-            return context.getString(R.string.text_every_day);
+            return "每天";
         }
         boolean monday = false;
         boolean tuesday = false;
@@ -56,33 +47,33 @@ public class TimeUtils {
             sunday = true;
         }
         if (monday && tuesday && wednesday && thursday && friday && !satuarday && !sunday) {
-            return context.getString(R.string.text_work_day);
+            return "工作日";
         } else if (!monday && !tuesday && !wednesday && !thursday && !friday && satuarday && sunday) {
-            return context.getString(R.string.text_weekend);
+            return "周末";
         } else if (!monday && !tuesday && !wednesday && !thursday && !friday && !satuarday && !sunday) {
-            return context.getString(R.string.text_once_time);
+            return "一次";
         } else {
             StringBuffer sb = new StringBuffer();
             if (monday) {
-                sb.append(context.getString(R.string.text_mon)).append(" ");
+                sb.append("周一").append(" ");
             }
             if (tuesday) {
-                sb.append(context.getString(R.string.text_tues)).append(" ");
+                sb.append("周二").append(" ");
             }
             if (wednesday) {
-                sb.append(context.getString(R.string.text_weds)).append(" ");
+                sb.append(("周三")).append(" ");
             }
             if (thursday) {
-                sb.append(context.getString(R.string.text_thurs)).append(" ");
+                sb.append(("周四")).append(" ");
             }
             if (friday) {
-                sb.append(context.getString(R.string.text_fri)).append(" ");
+                sb.append(("周五")).append(" ");
             }
             if (satuarday) {
-                sb.append(context.getString(R.string.text_satur)).append(" ");
+                sb.append(("周六")).append(" ");
             }
             if (sunday) {
-                sb.append(context.getString(R.string.text_sun));
+                sb.append(("周日"));
             }
 
             return sb.toString();
@@ -126,4 +117,22 @@ public class TimeUtils {
         return sb.toString();
     }
 
+
+    /**
+     * 秒数转时间
+     * */
+    public static String formatDateFromSeconds(String seconds){
+        if(seconds==null) {
+            return " ";
+        } else{
+            Date date=new Date();
+            try{
+                date.setTime(Long.parseLong(seconds)*1000);
+            }catch(NumberFormatException nfe){
+
+            }
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            return sdf.format(date);
+        }
+    }
 }

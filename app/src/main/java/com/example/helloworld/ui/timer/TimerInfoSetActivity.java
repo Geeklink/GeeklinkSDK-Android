@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,12 +27,11 @@ import com.example.helloworld.impl.OnItemClickListenerImp;
 import com.example.helloworld.impl.RecyclerItemClickListener;
 import com.example.helloworld.utils.TimeUtils;
 import com.example.helloworld.view.CommonToolbar;
-import com.geeklink.smartpisdk.api.ApiManager;
+import com.geeklink.smartpisdk.api.SmartPiApiManager;
 import com.geeklink.smartpisdk.data.GlobalData;
 import com.geeklink.smartpisdk.listener.OnGetSmartPiTimerDetailListener;
 import com.geeklink.smartpisdk.listener.OnSetSmartPiTimerListener;
 import com.gl.AcStateInfo;
-import com.gl.DatabaseType;
 import com.gl.SingleTimerActionType;
 import com.gl.SmartPiTimerAction;
 import com.gl.SmartPiTimerFull;
@@ -43,8 +41,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class TimerInfoSetActivity extends AppCompatActivity implements View.OnClickListener,CommonToolbar.RightListener,
-        OnGetSmartPiTimerDetailListener , OnSetSmartPiTimerListener {
+public class TimerInfoSetActivity extends AppCompatActivity implements View.OnClickListener, CommonToolbar.RightListener,
+        OnGetSmartPiTimerDetailListener, OnSetSmartPiTimerListener {
 
     private Context context;
     private CommonToolbar toolbar;
@@ -135,7 +133,7 @@ public class TimerInfoSetActivity extends AppCompatActivity implements View.OnCl
 
         if (!isAdd) {
             timerId = getIntent().getIntExtra("timerId", 0);
-            ApiManager.getInstance().getTimerInfoDetailWithMd5(md5,timerId);
+            SmartPiApiManager.getInstance().getTimerInfoDetailWithMd5(md5,timerId);
         }else{
             timerFull = new SmartPiTimerFull(0,timerName.getText().toString(),mTime,0,true,new ArrayList<SmartPiTimerAction>());
         }
@@ -144,8 +142,8 @@ public class TimerInfoSetActivity extends AppCompatActivity implements View.OnCl
         repeatTv.setText(TimeUtils.formatWeek((byte) dayOfWeek, context));
 
         //设置回调
-        ApiManager.getInstance().setOnGetSmartPiTimerDetailListener(this);
-        ApiManager.getInstance().setOnSetSmartPiTimerListener(this);
+        SmartPiApiManager.getInstance().setOnGetSmartPiTimerDetailListener(this);
+        SmartPiApiManager.getInstance().setOnSetSmartPiTimerListener(this);
     }
 
     private void setTextChangedListener() {
@@ -190,7 +188,7 @@ public class TimerInfoSetActivity extends AppCompatActivity implements View.OnCl
                         .setPositiveButton(context.getString(R.string.text_confirm), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ApiManager.getInstance().setActionTimerInfoWithMd5(md5,SingleTimerActionType.DELETE,timerFull);
+                                SmartPiApiManager.getInstance().setActionTimerInfoWithMd5(md5, SingleTimerActionType.DELETE,timerFull);
                             }
                         })
                         .setNegativeButton(context.getString(R.string.text_cancel), new DialogInterface.OnClickListener() {
@@ -234,7 +232,7 @@ public class TimerInfoSetActivity extends AppCompatActivity implements View.OnCl
         timerFull.mTime = mTime;
         timerFull.mWeek = dayOfWeek;
         //设置定时
-        ApiManager.getInstance().setActionTimerInfoWithMd5(md5,actionType,timerFull);
+        SmartPiApiManager.getInstance().setActionTimerInfoWithMd5(md5,actionType,timerFull);
     }
 
     @Override
@@ -273,7 +271,7 @@ public class TimerInfoSetActivity extends AppCompatActivity implements View.OnCl
         public void convert(ViewHolder holder, SmartPiTimerAction smartPiTimerAction, int position) {
             holder.setText(R.id.devNameTv,  "subId : " + smartPiTimerAction.mSubId);
             if(smartPiTimerAction.mValue.length() == 10){
-                ((TextView) holder.getView(R.id.actionTv)).setText(getAcStateDes(ApiManager.getInstance().getACStateInfoWithStateValue(smartPiTimerAction.mValue)));
+                ((TextView) holder.getView(R.id.actionTv)).setText(getAcStateDes(SmartPiApiManager.getInstance().getACStateInfoWithStateValue(smartPiTimerAction.mValue)));
             }else {
                 ((TextView) holder.getView(R.id.actionTv)).setText("");
             }

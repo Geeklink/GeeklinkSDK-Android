@@ -1,14 +1,15 @@
 package com.example.helloworld.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.helloworld.R;
 import com.example.helloworld.adapter.CommonAdapter;
@@ -19,8 +20,6 @@ import com.example.helloworld.utils.DialogUtils;
 import com.geeklink.smartpisdk.api.ApiManager;
 import com.geeklink.smartpisdk.utils.SharePrefUtil;
 import com.gl.DeviceInfo;
-import com.gl.DeviceMainType;
-import com.gl.GlDevType;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -35,17 +34,18 @@ public class MainDeviceListActivity extends AppCompatActivity {
 
     private CommonAdapter<DeviceInfo> adapter;
 
+    private int clickPosition = 0;
+    private static final int REQ_MAIN_DEV_DETAIL = 1101;
+
     private static final String TAG = "MainDeviceListActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_device_list);
         context = this;
-
+        setContentView(R.layout.activity_main_device_list);
         recyclerView = findViewById(R.id.recyclerView);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        adapter = new CommonAdapter<DeviceInfo>(context,R.layout.item_device,mainDevices) {
+        adapter = new CommonAdapter<DeviceInfo>(context, R.layout.item_device,mainDevices) {
             @Override
             public void convert(ViewHolder holder, DeviceInfo deviceInfo, int position) {
                 holder.setText(R.id.nameTv,deviceInfo.mMd5);
@@ -56,6 +56,7 @@ public class MainDeviceListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(View view, final int position) {
                 super.onItemClick(view, position);
+                clickPosition = position;
                 List<String> actions = new ArrayList<>();
                 actions.add(context.getString(R.string.text_dev_detail));
                 actions.add(context.getString(R.string.text_delete));
@@ -64,10 +65,19 @@ public class MainDeviceListActivity extends AppCompatActivity {
                     public void onItemClick(View view, int pos) {
                         super.onItemClick(view, pos);
                         if(pos == 0){
-                            Intent intent = new Intent(context, MainDeviceDetailActivity.class);
+                            Intent intent = new Intent();
+                            switch (mainDevices.get(position).mGeeklinkDevType){
+                                case SMART_PI:
+                                    intent.setClass(context, MainDeviceDetailActivity.class);
+                                    break;
+                                case DISINFECTION_LAMP:
+                                default:
+                                    intent.setClass(context, DisinfectionLampDetailActivity.class);
+                                    break;
+                            }
                             intent.putExtra("md5",mainDevices.get(position).mMd5);
-                            intent.putExtra("subId",mainDevices.get(position).mSubId);
-                            startActivity(intent);
+                            intent.putExtra("subId",mainDevices.get(position).mSubType);
+                            startActivityForResult(intent,REQ_MAIN_DEV_DETAIL);
                         }else{
                             ApiManager.getInstance().deleteMainDevice(mainDevices.get(position).mMd5);
                             mainDevices.remove(position);
@@ -89,6 +99,7 @@ public class MainDeviceListActivity extends AppCompatActivity {
      */
     private void getAndLinkMainDevice() {
         String deviceInfoListStr = SharePrefUtil.getString(context,"deviceInfoList","");
+        Log.e(TAG, "getAndLinkMainDevice: deviceInfoListStr = " + deviceInfoListStr);
         List<DeviceInfo> deviceInfoList = new Gson().fromJson(deviceInfoListStr,new TypeToken<List<DeviceInfo>>() { }.getType());
         if(deviceInfoList != null && deviceInfoList.size() > 0){
             mainDevices.clear();
@@ -102,7 +113,19 @@ public class MainDeviceListActivity extends AppCompatActivity {
 //        mainDevices.add(deviceInfo);
 
         adapter.notifyDataSetChanged();
+        //连接所有设备
         ApiManager.getInstance().linkAllMainDevice((ArrayList<DeviceInfo>) mainDevices);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQ_MAIN_DEV_DETAIL && resultCode == RESULT_OK){
+            if(data.getBooleanExtra("delete",false)){
+                mainDevices.remove(clickPosition);
+                adapter.notifyDataSetChanged();
+                SharePrefUtil.saveString(context,"deviceInfoList",new Gson().toJson(mainDevices));
+            }
+        }
+    }
 }

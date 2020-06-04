@@ -1,15 +1,14 @@
 package com.example.helloworld.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.helloworld.R;
 import com.example.helloworld.adapter.CommonAdapter;
@@ -17,17 +16,16 @@ import com.example.helloworld.adapter.holder.ViewHolder;
 import com.example.helloworld.impl.OnItemClickListenerImp;
 import com.example.helloworld.impl.RecyclerItemClickListener;
 import com.example.helloworld.ui.adddevice.AddSubDeviceActivity;
-import com.example.helloworld.ui.cotrol.DbACDevControlActivity;
 import com.example.helloworld.ui.cotrol.CustomDevControlActivity;
+import com.example.helloworld.ui.cotrol.DbACDevControlActivity;
 import com.example.helloworld.ui.cotrol.DbTvStbDevControlActivity;
 import com.example.helloworld.utils.DeviceUtil;
 import com.example.helloworld.utils.DialogUtils;
-import com.geeklink.smartpisdk.api.ApiManager;
+import com.geeklink.smartpisdk.api.SmartPiApiManager;
 import com.geeklink.smartpisdk.listener.OnGetSubDeviceListener;
 import com.geeklink.smartpisdk.listener.OnSetSubDevicveListener;
-import com.geeklink.smartpisdk.utils.SharePrefUtil;
 import com.gl.ActionFullType;
-import com.gl.DatabaseType;
+import com.gl.DatabaseDevType;
 import com.gl.DeviceMainType;
 import com.gl.StateType;
 import com.gl.SubDevInfo;
@@ -62,11 +60,11 @@ public class SubDeviceListActivity extends AppCompatActivity implements View.OnC
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        adapter = new CommonAdapter<SubDevInfo>(context,R.layout.item_sub_device,mSubDeviceList) {
+        adapter = new CommonAdapter<SubDevInfo>(context, R.layout.item_sub_device,mSubDeviceList) {
             @Override
             public void convert(ViewHolder holder, SubDevInfo subDevInfo, int position) {
-                holder.setText(R.id.nameTv, DeviceUtil.getDeviceType(context,subDevInfo.mMainType,subDevInfo.mSubType));
-                if(subDevInfo.mMainType == DeviceMainType.DATABASE){
+                holder.setText(R.id.nameTv, DeviceUtil.getDeviceType(subDevInfo.mMainType,subDevInfo.mDatabaseDevType));
+                if(subDevInfo.mMainType == DeviceMainType.DATABASE_DEV){
                     holder.setText(R.id.stateTv," subId : " +subDevInfo.mSubId + "  fileId : " + subDevInfo.mFileId);
                 }else{
                     holder.setText(R.id.stateTv," subId : " +subDevInfo.mSubId  + "    " + subDevInfo.mKeyIdList.size() + context.getString(R.string.text_keys_num));
@@ -85,9 +83,10 @@ public class SubDeviceListActivity extends AppCompatActivity implements View.OnC
                     @Override
                     public void onItemClick(View view, int pos) {
                         super.onItemClick(view, pos);
-                        if(pos == 0) startDeviceDetail(mSubDeviceList.get(position));
-                        else{
-                           ApiManager.getInstance().setSubDeviceWithMd5(md5,mSubDeviceList.get(position), ActionFullType.DELETE);
+                        if(pos == 0) {
+                            showDeviceDetail(mSubDeviceList.get(position));
+                        }else{
+                            SmartPiApiManager.getInstance().setSubDeviceWithMd5(md5,mSubDeviceList.get(position), ActionFullType.DELETE);
                         }
                     }
                 });
@@ -99,14 +98,21 @@ public class SubDeviceListActivity extends AppCompatActivity implements View.OnC
         addBtn = findViewById(R.id.addBtn);
         addBtn.setOnClickListener(this);
 
-        ApiManager.getInstance().setGetSubDeviceListener(this);
-        ApiManager.getInstance().setOnSetSubDevicveListener(this);
+        setListener();
+
     }
 
-    private void startDeviceDetail(SubDevInfo subDevInfo) {
+    private void setListener() {
+        //获取子设备列表回调
+        SmartPiApiManager.getInstance().setGetSubDeviceListener(this);
+        //设置子设备回调（增删改）
+        SmartPiApiManager.getInstance().setOnSetSubDevicveListener(this);
+    }
+
+    private void showDeviceDetail(SubDevInfo subDevInfo) {
         Intent intent = new Intent();
-        if(subDevInfo.mMainType == DeviceMainType.DATABASE) {
-            if (DatabaseType.values()[subDevInfo.mSubType] == DatabaseType.AC) {
+        if(subDevInfo.mMainType == DeviceMainType.DATABASE_DEV) {
+            if (subDevInfo.mDatabaseDevType == DatabaseDevType.AC) {
                 intent.setClass(context, DbACDevControlActivity.class);
             }else{
                 intent.setClass(context, DbTvStbDevControlActivity.class);
@@ -118,15 +124,15 @@ public class SubDeviceListActivity extends AppCompatActivity implements View.OnC
         intent.putExtra("md5",subDevInfo.mMd5);
         intent.putExtra("subId",subDevInfo.mSubId);
         intent.putExtra("mainType",subDevInfo.mMainType.ordinal());
-        intent.putExtra("subType",subDevInfo.mSubType);
         intent.putExtra("fileId" ,subDevInfo.mFileId);
+        intent.putExtra("databaseType",subDevInfo.mDatabaseDevType.ordinal());
         startActivity(intent);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        ApiManager.getInstance().getSubDeviceListWithMd5(md5);
+        SmartPiApiManager.getInstance().getSubDeviceListWithMd5(md5);
     }
 
     @Override
@@ -151,6 +157,7 @@ public class SubDeviceListActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void onSetSubDevice(StateType state, String md5, ActionFullType action, SubDevInfo subInfo) {
-        ApiManager.getInstance().getSubDeviceListWithMd5(md5);
+        //重新获取子设备列表，刷新列表
+        SmartPiApiManager.getInstance().getSubDeviceListWithMd5(md5);
     }
 }

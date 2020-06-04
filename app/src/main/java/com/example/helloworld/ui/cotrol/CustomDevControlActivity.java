@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -21,7 +20,7 @@ import com.example.helloworld.impl.OnItemClickListenerImp;
 import com.example.helloworld.impl.RecyclerItemClickListener;
 import com.example.helloworld.utils.DialogUtils;
 import com.example.helloworld.view.CommonToolbar;
-import com.geeklink.smartpisdk.api.ApiManager;
+import com.geeklink.smartpisdk.api.SmartPiApiManager;
 import com.geeklink.smartpisdk.listener.OnControlDeviceListener;
 import com.geeklink.smartpisdk.listener.OnDeviceEntryCodeListener;
 import com.geeklink.smartpisdk.listener.OnSetDeviceKeyListener;
@@ -38,7 +37,7 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomDevControlActivity extends AppCompatActivity implements OnDeviceEntryCodeListener, OnControlDeviceListener , OnSetDeviceKeyListener {
+public class CustomDevControlActivity extends AppCompatActivity implements OnDeviceEntryCodeListener, OnControlDeviceListener, OnSetDeviceKeyListener {
 
     private CommonToolbar toolbar;
     private Context context;
@@ -50,7 +49,6 @@ public class CustomDevControlActivity extends AppCompatActivity implements OnDev
     private String md5 = "";
     private int subId ;
     private String mKeyIdListStr;
-    private int subType;
     private int mainType;
     private SubDevInfo subDevInfo;
     private boolean isReStudy = false;
@@ -77,16 +75,14 @@ public class CustomDevControlActivity extends AppCompatActivity implements OnDev
         Intent intent = getIntent();
         md5 = intent.getStringExtra("md5").toLowerCase();
         subId = intent.getIntExtra("subId",0);
-        subType = intent.getIntExtra("subType",0);
         mainType = intent.getIntExtra("mainType",0);
         mKeyIdListStr = intent.getStringExtra("mKeyIdListStr");
 
-        subDevInfo = new SubDevInfo(subId, DeviceMainType.CUSTOM,subType,0,0, CarrierType.CARRIER_38,new ArrayList<Integer>(),md5,"");
-
+        subDevInfo = new SubDevInfo(subId, DeviceMainType.CUSTOM_DEV,null,0,0,0, CarrierType.CARRIER_38,new ArrayList<Integer>(),md5,"");
         toolbar = findViewById(R.id.title);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        adapter = new CommonAdapter<Integer>(context,R.layout.item_add_sub_dev, keyInfoList) {
+        adapter = new CommonAdapter<Integer>(context, R.layout.item_add_sub_dev, keyInfoList) {
             @Override
             public void convert(ViewHolder holder, Integer keyId, int position) {
                 holder.setText(R.id.nameTv,String.valueOf(keyId));
@@ -108,13 +104,16 @@ public class CustomDevControlActivity extends AppCompatActivity implements OnDev
                         super.onItemClick(view, position);
                         clickPosition = position;
                         if(position == 0){
-                            ApiManager.getInstance().controlSubDeviceKeyWithMd5(md5,subDevInfo,null, keyInfoList.get(position));
+                            //发码控制
+                            SmartPiApiManager.getInstance().controlSubDeviceKeyWithMd5(md5,subDevInfo,null, keyInfoList.get(position));
                         }else if(position == 1){
+                            //重新录码
                             isReStudy = true;
                             startStudyKeyCode();
                         }else{
-                            KeyInfo keyInfo = new KeyInfo(keyId,KeyStudyType.KEY_STUDY_IR.ordinal(),"");
-                            ApiManager.getInstance().setSubDeviceKeyWithMd5(md5,subId, ActionFullType.DELETE,keyInfo);
+                            //删除控制码
+                            KeyInfo keyInfo = new KeyInfo(keyId, KeyStudyType.KEY_STUDY_IR.ordinal(),"");
+                            SmartPiApiManager.getInstance().setSubDeviceKeyWithMd5(md5,subId, ActionFullType.DELETE,keyInfo);
                         }
                     }
                 });
@@ -122,9 +121,8 @@ public class CustomDevControlActivity extends AppCompatActivity implements OnDev
             }
         }));
 
-        ApiManager.getInstance().setOnControlDeviceListener(this);
-        ApiManager.getInstance().setOnDeviceEntryCodeListener(this);
-        ApiManager.getInstance().setOnSetDeviceKeyListener(this);
+        setListener();
+
 
         toolbar.setRightClick(new CommonToolbar.RightListener() {
             @Override
@@ -136,6 +134,15 @@ public class CustomDevControlActivity extends AppCompatActivity implements OnDev
         initData();
     }
 
+    private void setListener() {
+        //发码控制回调
+        SmartPiApiManager.getInstance().setOnControlDeviceListener(this);
+        //录码回调
+        SmartPiApiManager.getInstance().setOnDeviceEntryCodeListener(this);
+        //设置控制码回调
+        SmartPiApiManager.getInstance().setOnSetDeviceKeyListener(this);
+    }
+
 
     private void startStudyKeyCode(){
         if(alertDialog == null){
@@ -144,12 +151,14 @@ public class CustomDevControlActivity extends AppCompatActivity implements OnDev
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            ApiManager.getInstance().getCodeFromDeviceWithMd5(md5, KeyStudyType.KEY_STUDY_CANCEL);
+                            //停止录码
+                            SmartPiApiManager.getInstance().getCodeFromDeviceWithMd5(md5, KeyStudyType.KEY_STUDY_CANCEL);
                         }
                     }).create();
         }
         alertDialog.show();
-        ApiManager.getInstance().getCodeFromDeviceWithMd5(md5, KeyStudyType.KEY_STUDY_IR);
+        //开始录码
+        SmartPiApiManager.getInstance().getCodeFromDeviceWithMd5(md5, KeyStudyType.KEY_STUDY_IR);
         handler.postDelayed(cancelDialogRunnable, 20 * 1000);
     }
 
@@ -175,10 +184,12 @@ public class CustomDevControlActivity extends AppCompatActivity implements OnDev
                 alertDialog.dismiss();
                 if(isReStudy){
                     KeyInfo keyInfo = new KeyInfo(keyId,type.ordinal(),code);
-                    ApiManager.getInstance().setSubDeviceKeyWithMd5(md5,subId, ActionFullType.UPDATE,keyInfo);
+                    //录码成功后，设置、保存控制码
+                    SmartPiApiManager.getInstance().setSubDeviceKeyWithMd5(md5,subId, ActionFullType.UPDATE,keyInfo);
                 }else{
                     KeyInfo keyInfo = new KeyInfo(0,type.ordinal(),code);
-                    ApiManager.getInstance().setSubDeviceKeyWithMd5(md5,subId, ActionFullType.INSERT,keyInfo);
+                    //录码成功后，设置、保存控制码
+                    SmartPiApiManager.getInstance().setSubDeviceKeyWithMd5(md5,subId, ActionFullType.INSERT,keyInfo);
                 }
             }
 

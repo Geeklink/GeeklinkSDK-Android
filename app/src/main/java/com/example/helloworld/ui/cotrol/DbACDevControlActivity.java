@@ -1,7 +1,5 @@
 package com.example.helloworld.ui.cotrol;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,13 +8,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.helloworld.R;
-import com.geeklink.smartpisdk.api.ApiManager;
+import com.geeklink.smartpisdk.api.SmartPiApiManager;
 import com.geeklink.smartpisdk.data.DBRCKeyType;
 import com.geeklink.smartpisdk.listener.OnControlDeviceListener;
 import com.geeklink.smartpisdk.listener.OnGetSubDeviceStateListener;
 import com.gl.AcStateInfo;
 import com.gl.CarrierType;
+import com.gl.DatabaseDevType;
 import com.gl.DbAirKeyType;
 import com.gl.DeviceMainType;
 import com.gl.StateType;
@@ -30,8 +31,6 @@ public class DbACDevControlActivity extends AppCompatActivity implements OnGetSu
     private Context context;
     private String md5 = "";
     private int subId;
-    private DeviceMainType mainType;
-    private int subType = 0;
     private int fileId;
     private LinearLayout powerLayout;
     private LinearLayout modeLayout;
@@ -67,18 +66,23 @@ public class DbACDevControlActivity extends AppCompatActivity implements OnGetSu
         Intent intent = getIntent();
         md5 = intent.getStringExtra("md5");
         subId = intent.getIntExtra("subId", 0);
-        mainType = DeviceMainType.values()[intent.getIntExtra("mainType", 0)];
-        subType = intent.getIntExtra("subType", 0);
         fileId = intent.getIntExtra("fileId", 0);
-
-        subDevInfo = new SubDevInfo(subId, DeviceMainType.DATABASE, subType, 0, fileId, CarrierType.CARRIER_38, new ArrayList<Integer>(), md5, "");
+        subDevInfo = new SubDevInfo(subId, DeviceMainType.DATABASE_DEV, DatabaseDevType.AC,0,0,fileId, CarrierType.CARRIER_38,new ArrayList<Integer>(),md5,"");
         acStateInfo = new AcStateInfo(true,1,26,0,1);//默认一个空调状态，开-制冷-温度26-风速0-风向1
 
-        ApiManager.getInstance().setOnControlDeviceListener(this);
-        ApiManager.getInstance().setOnGetSubDeviceStateListener(this);
-        ApiManager.getInstance().getSubDeviceStateInfo(md5.toLowerCase(), subId);
+        setListener();
+
+        //获取空调设备状态
+        SmartPiApiManager.getInstance().getSubDeviceStateInfo(md5.toLowerCase(), subId);
 
         setupView(acStateInfo);
+    }
+
+    private void setListener() {
+        //控制回复
+        SmartPiApiManager.getInstance().setOnControlDeviceListener(this);
+        //获取设备状态回复
+        SmartPiApiManager.getInstance().setOnGetSubDeviceStateListener(this);
     }
 
     @Override
@@ -87,7 +91,7 @@ public class DbACDevControlActivity extends AppCompatActivity implements OnGetSu
             if (subStateInfo.mStateValue != null
             && !subStateInfo.mStateValue.equals("")) {
                 subDevInfo.mState = subStateInfo.mStateValue;
-                acStateInfo = ApiManager.getInstance().getACStateInfoWithStateValue(subStateInfo.mStateValue);
+                acStateInfo = SmartPiApiManager.getInstance().getACStateInfoWithStateValue(subStateInfo.mStateValue);
                 setupView(acStateInfo);
             }
         }
@@ -204,7 +208,8 @@ public class DbACDevControlActivity extends AppCompatActivity implements OnGetSu
         }
 
         setupView(acStateInfo);
-        ApiManager.getInstance().controlSubDeviceKeyWithMd5(md5, subDevInfo, acStateInfo, keyId);
+        //控制码库子设备
+        SmartPiApiManager.getInstance().controlSubDeviceKeyWithMd5(md5, subDevInfo, acStateInfo, keyId);
 
     }
 

@@ -1,36 +1,34 @@
 package com.example.helloworld.ui.adddevice;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.helloworld.R;
 import com.example.helloworld.adapter.BrandsListAdapter;
 import com.example.helloworld.adapter.CommonAdapter;
 import com.example.helloworld.adapter.holder.ViewHolder;
-import com.example.helloworld.view.CommonToolbar;
 import com.example.helloworld.bean.SortModel;
 import com.example.helloworld.enumdata.AddDevType;
+import com.example.helloworld.view.CommonToolbar;
+import com.geeklink.smartpisdk.api.SmartPiApiManager;
 import com.geeklink.smartpisdk.bean.IRLibBrandData;
-import com.geeklink.smartpisdk.utils.CommonUtil;
-import com.geeklink.smartpisdk.api.ApiManager;
 import com.geeklink.smartpisdk.listener.OnGetDBRCBrandListener;
 import com.geeklink.smartpisdk.listener.OnSetSubDevicveListener;
+import com.geeklink.smartpisdk.utils.CommonUtil;
 import com.gl.ActionFullType;
 import com.gl.CarrierType;
-import com.gl.CustomType;
-import com.gl.DatabaseType;
+import com.gl.DatabaseDevType;
 import com.gl.DeviceMainType;
 import com.gl.LanguageType;
 import com.gl.StateType;
@@ -59,7 +57,7 @@ public class AddDbControlDevActivity extends AppCompatActivity implements OnSetS
     private SearchAdapter searchAdapter;
     private BrandsListAdapter adapter;
 
-    private DatabaseType databaseType = DatabaseType.AC;
+    private DatabaseDevType databaseType = DatabaseDevType.AC;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +97,7 @@ public class AddDbControlDevActivity extends AppCompatActivity implements OnSetS
         toolbar.setRightClick(new CommonToolbar.RightListener() {
             @Override
             public void rightClick() {
-                bindSubDevice();
+                bindCustomSubDevice();
             }
         });
 
@@ -109,10 +107,16 @@ public class AddDbControlDevActivity extends AppCompatActivity implements OnSetS
             toolbar.setRightTextVisible(false);
         }
 
+        setListener();
         initData();
 
-        ApiManager.getInstance().setOnSetSubDevicveListener(this);
+    }
 
+    private void setListener() {
+        //设置子设备回调
+        SmartPiApiManager.getInstance().setOnSetSubDevicveListener(this);
+        //获取码库设备品牌列表回调
+        SmartPiApiManager.getInstance().setOnGetDBRCBrandListener(this);
     }
 
 
@@ -120,24 +124,23 @@ public class AddDbControlDevActivity extends AppCompatActivity implements OnSetS
         switch (addDevType){
             case AirCondition:
                 toolbar.setMainTitle(context.getString(R.string.text_ac));
-                databaseType = DatabaseType.AC;
+                databaseType = DatabaseDevType.AC;
                 break;
             case TV:
                 toolbar.setMainTitle(context.getString(R.string.text_tv));
-                databaseType = DatabaseType.TV;
+                databaseType = DatabaseDevType.TV;
                 break;
             case STB:
                 toolbar.setMainTitle(context.getString(R.string.text_stb));
-                databaseType = DatabaseType.STB;
+                databaseType = DatabaseDevType.STB;
                 break;
             case IPTV:
             default:
                 toolbar.setMainTitle(context.getString(R.string.text_iptv));
-                databaseType = DatabaseType.IPTV;
+                databaseType = DatabaseDevType.IPTV;
                 break;
         }
-        ApiManager.getInstance().setOnGetDBRCBrandListener(this);
-        ApiManager.getInstance().getDBRCBrandWithMd5(md5,databaseType);
+        SmartPiApiManager.getInstance().getDBRCBrandWithMd5(md5,databaseType);
     }
 
     private void initSearch() {
@@ -176,23 +179,12 @@ public class AddDbControlDevActivity extends AppCompatActivity implements OnSetS
         finish();
     }
 
-
-    private void bindSubDevice(){
-        int subType;
-        switch (addDevType) {
-            case TV:
-                subType = CustomType.TV.ordinal();
-                break;
-            case STB:
-                subType = CustomType.STB.ordinal();
-                break;
-            case IPTV:
-            default:
-                subType = CustomType.IPTV.ordinal();
-                break;
-        }
-        SubDevInfo subDevInfo = new SubDevInfo(0, DeviceMainType.CUSTOM,subType,0,0, CarrierType.CARRIER_38,new ArrayList<Integer>(),md5,"");
-        ApiManager.getInstance().setSubDeviceWithMd5(md5, subDevInfo, ActionFullType.INSERT);
+    /**
+     * 绑定添加自学习设备
+     */
+    private void bindCustomSubDevice(){
+        SubDevInfo subDevInfo = new SubDevInfo(0, DeviceMainType.CUSTOM_DEV,DatabaseDevType.TV,0,0,0, CarrierType.CARRIER_38,new ArrayList<Integer>(),md5,"");
+        SmartPiApiManager.getInstance().setSubDeviceWithMd5(md5, subDevInfo, ActionFullType.INSERT);
     }
 
     @Override

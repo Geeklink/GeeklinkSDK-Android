@@ -18,7 +18,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.timer.TimerActionSetActivity"></activity>
+        <activity android:name=".ui.DisinfectionEditTimerFourActivity"/>
+        <activity android:name=".ui.DisinfectionLampTimerListActivity"/>
+        <activity android:name=".ui.DisinfectionLampRecordsActivity"/>
+        <activity android:name=".ui.DisinfectionLampDetailActivity" />
+        <activity android:name=".ui.timer.TimerActionSetActivity"/>
         <activity android:name=".ui.LocalIrCodeActivity" />
         <activity android:name=".ui.timer.TimerInfoSetActivity" />
         <activity android:name=".ui.timer.TimerListActivity" />

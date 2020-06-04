@@ -1,14 +1,13 @@
 package com.example.helloworld.ui.adddevice;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.helloworld.R;
 import com.example.helloworld.adapter.CommonAdapter;
@@ -17,11 +16,11 @@ import com.example.helloworld.bean.AddDeviceInfo;
 import com.example.helloworld.enumdata.AddDevType;
 import com.example.helloworld.impl.OnItemClickListenerImp;
 import com.example.helloworld.impl.RecyclerItemClickListener;
-import com.geeklink.smartpisdk.api.ApiManager;
+import com.geeklink.smartpisdk.api.SmartPiApiManager;
 import com.geeklink.smartpisdk.listener.OnSetSubDevicveListener;
 import com.gl.ActionFullType;
 import com.gl.CarrierType;
-import com.gl.CustomType;
+import com.gl.DatabaseDevType;
 import com.gl.DeviceMainType;
 import com.gl.StateType;
 import com.gl.SubDevInfo;
@@ -51,7 +50,7 @@ public class AddSubDeviceActivity extends AppCompatActivity implements OnSetSubD
 //        recyclerView.setLayoutManager(new GridLayoutManager(context,3));
 //        recyclerView.addItemDecoration(new GridSpacingItemDecoration(3, 20, false));
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        adapter = new CommonAdapter<AddDeviceInfo>(context,R.layout.item_add_sub_dev, addDeviceInfos) {
+        adapter = new CommonAdapter<AddDeviceInfo>(context, R.layout.item_add_sub_dev, addDeviceInfos) {
             @Override
             public void convert(ViewHolder holder, AddDeviceInfo addDeviceInfo, int position) {
                 holder.setText(R.id.nameTv,addDeviceInfo.mDevName);
@@ -63,38 +62,8 @@ public class AddSubDeviceActivity extends AppCompatActivity implements OnSetSubD
             public void onItemClick(View view, int position) {
                 super.onItemClick(view, position);
                 if(addDeviceInfos.get(position).mAddDevType.ordinal() > AddDevType.IPTV.ordinal()){//添加自学习遥控
-                    int subType;
-                    switch (addDeviceInfos.get(position).mAddDevType) {
-//                        case Curtain:
-//                            subType = CustomType.CURTAIN.ordinal();
-//                            break;
-//                        case Fan:
-//                            subType = CustomType.FAN.ordinal();
-//                            break;
-//                        case SoundBox:
-//                            subType = CustomType.SOUNDBOX.ordinal();
-//                            break;
-//                        case Light:
-//                            subType = CustomType.RC_LIGHT.ordinal();
-//                            break;
-//                        case AC_FAN:
-//                            subType = CustomType.AC_FAN.ordinal();
-//                            break;
-//                        case PROJECTOR:
-//                            subType = CustomType.PROJECTOR.ordinal();
-//                            break;
-//                        case AIR_PURIFIER:
-//                            subType = CustomType.AIR_PURIFIER.ordinal();
-//                            break;
-//                        case ONE_KEY:
-//                            subType = CustomType.ONE_KEY.ordinal();
-//                            break;
-                        default:
-                            subType = CustomType.CUSTOM.ordinal();
-                            break;
-                    }
-                    SubDevInfo subDevInfo = new SubDevInfo(0, DeviceMainType.CUSTOM,subType,0,0, CarrierType.CARRIER_38,new ArrayList<Integer>(),md5,"");
-                    ApiManager.getInstance().setSubDeviceWithMd5(md5, subDevInfo, ActionFullType.INSERT);
+                    SubDevInfo subDevInfo = new SubDevInfo(0, DeviceMainType.CUSTOM_DEV, DatabaseDevType.TV,0,0,0, CarrierType.CARRIER_38,new ArrayList<Integer>(),md5,"");
+                    SmartPiApiManager.getInstance().setSubDeviceWithMd5(md5, subDevInfo, ActionFullType.INSERT);
                 }else{
                     Intent intent  = new Intent(context, AddDbControlDevActivity.class);
                     intent.putExtra("md5",md5);
@@ -105,8 +74,8 @@ public class AddSubDeviceActivity extends AppCompatActivity implements OnSetSubD
             }
         }));
 
-
-        ApiManager.getInstance().setOnSetSubDevicveListener(this);
+        //设置子设备回调
+        SmartPiApiManager.getInstance().setOnSetSubDevicveListener(this);
         getYKBAddDevType();
     }
 
@@ -114,11 +83,11 @@ public class AddSubDeviceActivity extends AppCompatActivity implements OnSetSubD
     //小派分机添加的设备列表
     public void getYKBAddDevType() {
         addDeviceInfos.clear();
-        addDeviceInfos.add(new AddDeviceInfo(context.getString(R.string.text_ac),AddDevType.AirCondition));//空调
-        addDeviceInfos.add(new AddDeviceInfo(context.getString(R.string.text_tv),AddDevType.TV));//电视
-        addDeviceInfos.add(new AddDeviceInfo(context.getString(R.string.text_stb),AddDevType.STB));//机顶盒
-        addDeviceInfos.add(new AddDeviceInfo(context.getString(R.string.text_iptv),AddDevType.IPTV));//安卓盒子
-        addDeviceInfos.add(new AddDeviceInfo(context.getString(R.string.text_custom),AddDevType.Custom));//自定义
+        addDeviceInfos.add(new AddDeviceInfo(context.getString(R.string.text_ac), AddDevType.AirCondition));//空调
+        addDeviceInfos.add(new AddDeviceInfo(context.getString(R.string.text_tv), AddDevType.TV));//电视
+        addDeviceInfos.add(new AddDeviceInfo(context.getString(R.string.text_stb), AddDevType.STB));//机顶盒
+        addDeviceInfos.add(new AddDeviceInfo(context.getString(R.string.text_iptv), AddDevType.IPTV));//安卓盒子
+        addDeviceInfos.add(new AddDeviceInfo(context.getString(R.string.text_custom), AddDevType.Custom));//自定义
         adapter.notifyDataSetChanged();
     }
 

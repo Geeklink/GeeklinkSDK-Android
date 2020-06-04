@@ -1,15 +1,13 @@
 package com.example.helloworld.utils;
 
-import android.content.Context;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
 
 import com.example.helloworld.R;
 import com.example.helloworld.adapter.CommonAdapter;
 import com.example.helloworld.adapter.holder.ViewHolder;
 import com.example.helloworld.impl.OnItemClickListener;
 import com.example.helloworld.view.CustomItemDialog;
+
 import java.util.List;
 
 

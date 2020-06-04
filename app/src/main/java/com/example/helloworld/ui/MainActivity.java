@@ -12,22 +12,13 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.helloworld.R;
-import com.example.helloworld.adapter.CommonAdapter;
-import com.example.helloworld.adapter.holder.ViewHolder;
-import com.example.helloworld.impl.OnItemClickListenerImp;
-import com.example.helloworld.impl.RecyclerItemClickListener;
 import com.example.helloworld.view.CommonToolbar;
 import com.geeklink.smartpisdk.api.ApiManager;
 import com.geeklink.smartpisdk.impl.ConfigDevResult;
@@ -46,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements ConfigDevResult,OnDiscoverDeviceListener, OnSetDeviceListener {
+public class MainActivity extends AppCompatActivity implements ConfigDevResult, OnDiscoverDeviceListener, OnSetDeviceListener {
     private EditText ssidEdt;
     private EditText pswEdt;
     private CommonToolbar toolbar;
@@ -75,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements ConfigDevResult,O
         toolbar.setRightClick(new CommonToolbar.RightListener() {
             @Override
             public void rightClick() {
-                startActivity(new Intent(context,MainDeviceListActivity.class));
+                startActivity(new Intent(context, MainDeviceListActivity.class));
             }
         });
 
@@ -86,6 +77,15 @@ public class MainActivity extends AppCompatActivity implements ConfigDevResult,O
             }
         }
 
+        setListener();
+
+    }
+
+    private void setListener() {
+        //设备配网成功后发现设备回调监听
+        ApiManager.getInstance().setDiscoverDeviceListener(this);
+        //设备配网成功后，自动绑定设备回调监听
+        ApiManager.getInstance().setSetDeviceListener(this);
     }
 
 
@@ -129,14 +129,10 @@ public class MainActivity extends AppCompatActivity implements ConfigDevResult,O
         isHasSetDev = false;
         String ssid = ssidEdt.getText().toString().trim();
         String pwd = pswEdt.getText().toString().trim();
-
         String apBssid = new EspWifiAdminSimple(MainActivity.this).getWifiConnectedBssid();
-        //初始化sdk
+
+        //开始配网
         ApiManager.getInstance().configWifi(MainActivity.this,apBssid, ssid, pwd , this);
-        //设备配网成功后发现设备回调监听
-        ApiManager.getInstance().setDiscoverDeviceListener(this);
-        //设备配网成功后，自动绑定设备回调监听
-        ApiManager.getInstance().setSetDeviceListener(this);
 
         mProgressDialog = new ProgressDialog(context);
         mProgressDialog.setMessage(context.getString(R.string.configuring_message));
@@ -150,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements ConfigDevResult,O
         mProgressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getText(android.R.string.cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                //停止配网
                 ApiManager.getInstance().stopConfigWifi();
             }
         });
@@ -187,12 +184,13 @@ public class MainActivity extends AppCompatActivity implements ConfigDevResult,O
             deviceInfoList = new ArrayList<>();
         }
         //2.保存新添加的设备
-        DeviceInfo deviceInfo = new DeviceInfo(discoverDeviceInfo.mDeviceToken,discoverDeviceInfo.mMainType,discoverDeviceInfo.mMD5.toLowerCase(),discoverDeviceInfo.mType,0);
+        DeviceInfo deviceInfo = new DeviceInfo(discoverDeviceInfo.mDeviceToken,discoverDeviceInfo.mMainType,discoverDeviceInfo.mGeeklinkDevType,discoverDeviceInfo.mMD5.toLowerCase(),discoverDeviceInfo.mType);
         deviceInfoList.add(deviceInfo);
         SharePrefUtil.saveString(context,"deviceInfoList",new Gson().toJson(deviceInfoList));
     }
+
     /**
-     * 设备配网回调
+     * 设备配网结果回调
      * @param state
      */
     @Override

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,10 +22,8 @@ import com.example.helloworld.adapter.holder.ViewHolder;
 import com.example.helloworld.impl.SectionRecyclerItemClickListener;
 import com.example.helloworld.utils.TimeUtils;
 import com.example.helloworld.view.CommonToolbar;
-import com.geeklink.smartpisdk.api.ApiManager;
+import com.geeklink.smartpisdk.api.SmartPiApiManager;
 import com.geeklink.smartpisdk.listener.OnGetSmartPiTimerListListener;
-import com.geeklink.smartpisdk.listener.OnSetSmartPiTimerListener;
-import com.gl.Api;
 import com.gl.SingleTimerActionType;
 import com.gl.SmartPiTimerSimple;
 import com.gl.StateType;
@@ -58,8 +55,8 @@ public class TimerListActivity extends AppCompatActivity implements OnGetSmartPi
         md5 = getIntent().getStringExtra("md5");
 
         initView();
-        ApiManager.getInstance().setOnGetSmartPiTimerListListener(this);
-        ApiManager.getInstance().getActionTimerListWithMd5(md5);
+        SmartPiApiManager.getInstance().setOnGetSmartPiTimerListListener(this);
+        SmartPiApiManager.getInstance().getActionTimerListWithMd5(md5);
     }
 
     public void initView() {
@@ -71,7 +68,7 @@ public class TimerListActivity extends AppCompatActivity implements OnGetSmartPi
         refreshView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                ApiManager.getInstance().getActionTimerListWithMd5(md5);
+                SmartPiApiManager.getInstance().getActionTimerListWithMd5(md5);
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -98,7 +95,7 @@ public class TimerListActivity extends AppCompatActivity implements OnGetSmartPi
                     } else {
                             SmartPiTimerSimple timerSimple = mDatas.get(position);
                             timerSimple.mOnOff = !timerSimple.mOnOff;
-                            ApiManager.getInstance().toDeviceSmartPiTimerSetSimple(md5,SingleTimerActionType.UPDATE,timerSimple);
+                        SmartPiApiManager.getInstance().toDeviceSmartPiTimerSetSimple(md5, SingleTimerActionType.UPDATE,timerSimple);
                     }
                 }
                 return true;
@@ -130,7 +127,7 @@ public class TimerListActivity extends AppCompatActivity implements OnGetSmartPi
             mDatas.addAll(timerList);
             adapter.notifyDataSetChanged();
         }else{
-            Toast.makeText(this, context.getString(R.string.text_get_data_failed), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.text_get_data_failed, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -139,7 +136,7 @@ public class TimerListActivity extends AppCompatActivity implements OnGetSmartPi
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == REQ_TIMER_SET && resultCode == RESULT_OK){
-            ApiManager.getInstance().getActionTimerListWithMd5(md5);
+            SmartPiApiManager.getInstance().getActionTimerListWithMd5(md5);
         }
     }
 

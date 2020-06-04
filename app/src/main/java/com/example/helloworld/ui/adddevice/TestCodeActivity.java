@@ -1,28 +1,27 @@
 package com.example.helloworld.ui.adddevice;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.helloworld.R;
 import com.example.helloworld.view.CommonToolbar;
 import com.example.helloworld.view.SelectorImageView;
-import com.geeklink.smartpisdk.api.ApiManager;
+import com.geeklink.smartpisdk.api.SmartPiApiManager;
 import com.geeklink.smartpisdk.data.DBRCKeyType;
 import com.geeklink.smartpisdk.listener.OnGetDBRCBrandFlieIdsListener;
 import com.geeklink.smartpisdk.listener.OnSetSubDevicveListener;
 import com.gl.AcStateInfo;
 import com.gl.ActionFullType;
 import com.gl.CarrierType;
-import com.gl.DatabaseType;
+import com.gl.DatabaseDevType;
 import com.gl.DeviceMainType;
 import com.gl.StateType;
 import com.gl.SubDevInfo;
@@ -40,7 +39,7 @@ public class TestCodeActivity extends AppCompatActivity implements View.OnClickL
     private String currentBrandName;//当前品牌名
     private String brandId;
     private String irLibName = "";
-    private DatabaseType databaseType;
+    private DatabaseDevType databaseType;
     private String md5 = "";
 
     //新码库
@@ -76,13 +75,21 @@ public class TestCodeActivity extends AppCompatActivity implements View.OnClickL
 
         Intent intent  = getIntent();
         md5 = intent.getStringExtra("md5");
-        databaseType = DatabaseType.values()[intent.getIntExtra("databaseType",0)];
+        databaseType = DatabaseDevType.values()[intent.getIntExtra("databaseType",0)];
         currentBrandName = intent.getStringExtra("brandName");
         brandId = intent.getStringExtra("brandId");
         initView();
 
-        ApiManager.getInstance().getDBRCBrandFlieIdWithMd5(md5, databaseType,brandId);
-        ApiManager.getInstance().setOnGetDBRCBrandFlieIdsListener(this);
+        setListener();
+        SmartPiApiManager.getInstance().getDBRCBrandFlieIdWithMd5(md5, databaseType,brandId);
+
+    }
+
+    private void setListener() {
+        //获取码库设备按键列表回调
+        SmartPiApiManager.getInstance().setOnGetDBRCBrandFlieIdsListener(this);
+        //设置子设备回调
+        SmartPiApiManager.getInstance().setOnSetSubDevicveListener(this);
     }
 
 
@@ -110,7 +117,7 @@ public class TestCodeActivity extends AppCompatActivity implements View.OnClickL
         btnAV_TV = findViewById(R.id.btn_avtv);
         btnAgain = findViewById(R.id.button_test);
 
-        if (databaseType == DatabaseType.IPTV) {
+        if (databaseType == DatabaseDevType.IPTV) {
             ((ImageView)findViewById(R.id.btn_mute)).setImageResource(R.drawable.key_home);
         }
 
@@ -118,11 +125,10 @@ public class TestCodeActivity extends AppCompatActivity implements View.OnClickL
         toolbar.setRightClick(new CommonToolbar.RightListener() {
             @Override
             public void rightClick() {
-                startBindDeviceAty(databaseType.ordinal(),fileId,currentBrandName);
+                startBindDeviceAty(databaseType,fileId,currentBrandName);
             }
         });
 
-        ApiManager.getInstance().setOnSetSubDevicveListener(this);
     }
 
     @Override
@@ -133,77 +139,77 @@ public class TestCodeActivity extends AppCompatActivity implements View.OnClickL
                 break;
 
             case R.id.btn_avtv:
-                if (databaseType == DatabaseType.TV) {
+                if (databaseType == DatabaseDevType.TV) {
                     getKeyAndSendCtrl(fileIdList.get(index), DBRCKeyType.TV_AVTV.getKeyId());
                 }
                 break;
 
             case R.id.btn_sw:
-                if (databaseType == DatabaseType.STB) {
+                if (databaseType == DatabaseDevType.STB) {
                     getKeyAndSendCtrl(fileIdList.get(index), DBRCKeyType.STB_WAIT.getKeyId());
-                } else if (databaseType == DatabaseType.TV) {
+                } else if (databaseType == DatabaseDevType.TV) {
                     getKeyAndSendCtrl(fileIdList.get(index), DBRCKeyType.TV_POWER.getKeyId());
-                } else if (databaseType == DatabaseType.IPTV) {
+                } else if (databaseType == DatabaseDevType.IPTV) {
                     getKeyAndSendCtrl(fileIdList.get(index), DBRCKeyType.IPTV_POWER.getKeyId());
                 }
                 break;
 
             case R.id.btn_mute:
-                if (databaseType == DatabaseType.STB) {
+                if (databaseType == DatabaseDevType.STB) {
                     getKeyAndSendCtrl(fileIdList.get(index), DBRCKeyType.STB_MUTE.getKeyId());
-                } else if (databaseType == DatabaseType.TV) {
+                } else if (databaseType == DatabaseDevType.TV) {
                     getKeyAndSendCtrl(fileIdList.get(index), DBRCKeyType.TV_MUTE.getKeyId());
-                } else if (databaseType == DatabaseType.IPTV) {
+                } else if (databaseType == DatabaseDevType.IPTV) {
                     getKeyAndSendCtrl(fileIdList.get(index), DBRCKeyType.IPTV_HOME.getKeyId());
                 }
                 break;
 
             case R.id.btn_up:
-                if (databaseType == DatabaseType.STB) {
+                if (databaseType == DatabaseDevType.STB) {
                     getKeyAndSendCtrl(fileIdList.get(index), DBRCKeyType.STB_UP.getKeyId());
-                } else if (databaseType == DatabaseType.TV) {
+                } else if (databaseType == DatabaseDevType.TV) {
                     getKeyAndSendCtrl(fileIdList.get(index), DBRCKeyType.TV_UP.getKeyId());
-                } else if (databaseType == DatabaseType.IPTV) {
+                } else if (databaseType == DatabaseDevType.IPTV) {
                     getKeyAndSendCtrl(fileIdList.get(index), DBRCKeyType.IPTV_UP.getKeyId());
                 }
                 break;
 
             case R.id.btn_down:
-                if (databaseType == DatabaseType.STB) {
+                if (databaseType == DatabaseDevType.STB) {
                     getKeyAndSendCtrl(fileIdList.get(index), DBRCKeyType.STB_DOWN.getKeyId());
-                } else if (databaseType == DatabaseType.TV) {
+                } else if (databaseType == DatabaseDevType.TV) {
                     getKeyAndSendCtrl(fileIdList.get(index), DBRCKeyType.TV_DOWN.getKeyId());
-                } else if (databaseType == DatabaseType.IPTV) {
+                } else if (databaseType == DatabaseDevType.IPTV) {
                     getKeyAndSendCtrl(fileIdList.get(index), DBRCKeyType.IPTV_DOWN.getKeyId());
                 }
                 break;
 
             case R.id.btn_left:
-                if (databaseType == DatabaseType.STB) {
+                if (databaseType == DatabaseDevType.STB) {
                     getKeyAndSendCtrl(fileIdList.get(index), DBRCKeyType.STB_LEFT.getKeyId());
-                } else if (databaseType == DatabaseType.TV) {
+                } else if (databaseType == DatabaseDevType.TV) {
                     getKeyAndSendCtrl(fileIdList.get(index), DBRCKeyType.TV_LEFT.getKeyId());
-                } else if (databaseType == DatabaseType.IPTV) {
+                } else if (databaseType == DatabaseDevType.IPTV) {
                     getKeyAndSendCtrl(fileIdList.get(index), DBRCKeyType.IPTV_LEFT.getKeyId());
                 }
                 break;
 
             case R.id.btn_right:
-                if (databaseType == DatabaseType.STB) {
+                if (databaseType == DatabaseDevType.STB) {
                     getKeyAndSendCtrl(fileIdList.get(index), DBRCKeyType.STB_RIGHT.getKeyId());
-                } else if (databaseType == DatabaseType.TV) {
+                } else if (databaseType == DatabaseDevType.TV) {
                     getKeyAndSendCtrl(fileIdList.get(index), DBRCKeyType.TV_RIGHT.getKeyId());
-                } else if (databaseType == DatabaseType.IPTV) {
+                } else if (databaseType == DatabaseDevType.IPTV) {
                     getKeyAndSendCtrl(fileIdList.get(index), DBRCKeyType.IPTV_RIGHT.getKeyId());
                 }
                 break;
 
             case R.id.btn_ok:
-                if (databaseType == DatabaseType.STB) {
+                if (databaseType == DatabaseDevType.STB) {
                     getKeyAndSendCtrl(fileIdList.get(index), DBRCKeyType.STB_OK.getKeyId());
-                } else if (databaseType == DatabaseType.TV) {
+                } else if (databaseType == DatabaseDevType.TV) {
                     getKeyAndSendCtrl(fileIdList.get(index), DBRCKeyType.TV_DONE.getKeyId());
-                } else if (databaseType == DatabaseType.IPTV) {
+                } else if (databaseType == DatabaseDevType.IPTV) {
                     getKeyAndSendCtrl(fileIdList.get(index), DBRCKeyType.IPTV_OK.getKeyId());
                 }
                 break;
@@ -244,10 +250,10 @@ public class TestCodeActivity extends AppCompatActivity implements View.OnClickL
     private void getKeyAndSendCtrl(final String fileId, final int keyId) {
 
         AcStateInfo acStateInfo = null;
-        if(databaseType == DatabaseType.AC){
+        if(databaseType == DatabaseDevType.AC){
             acStateInfo = new AcStateInfo(true,1,26,0,1);//默认一个空调状态，开-制冷-温度26-风速0-风向1
         }
-        ApiManager.getInstance().testDataBaseDeviceWithMd5(md5,databaseType,fileId,acStateInfo,keyId);
+        SmartPiApiManager.getInstance().testDataBaseDeviceWithMd5(md5,databaseType,fileId,acStateInfo,keyId);
     }
 
 
@@ -319,9 +325,9 @@ public class TestCodeActivity extends AppCompatActivity implements View.OnClickL
 
 
     //前往添加界面
-    private void startBindDeviceAty(int subType, int fileId, String name) {
-        SubDevInfo subDevInfo = new SubDevInfo(0, DeviceMainType.DATABASE,subType,0,fileId, CarrierType.CARRIER_38,new ArrayList<Integer>(),md5,"");
-        ApiManager.getInstance().setSubDeviceWithMd5(md5, subDevInfo, ActionFullType.INSERT);
+    private void startBindDeviceAty(DatabaseDevType databaseType, int fileId, String name) {
+        SubDevInfo subDevInfo = new SubDevInfo(0, DeviceMainType.DATABASE_DEV, databaseType,0,0,fileId, CarrierType.CARRIER_38,new ArrayList<Integer>(),md5,"");
+        SmartPiApiManager.getInstance().setSubDeviceWithMd5(md5, subDevInfo, ActionFullType.INSERT);
     }
 
 

@@ -5,12 +5,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.View;
 
 import com.example.helloworld.R;
 import com.example.helloworld.adapter.CommonAdapter;
@@ -121,7 +121,7 @@ public class TimezoneActivity extends AppCompatActivity {
         } else {
             timezone = (short) -(hour * 60 + minute);
         }
-        ApiManager.getInstance().toDeviceTimeZone(md5,TimezoneAction.TIMEZONE_ACTION_SET,timezone);
+        ApiManager.getInstance().toDeviceTimeZone(md5, TimezoneAction.TIMEZONE_ACTION_SET,timezone);
         Intent intent = new Intent();
         intent.putExtra("timeZone", "GMT" + Time(TopGetTimeZoneTypeEnum.values()[position].ordinal()));
         setResult(RESULT_OK, intent);

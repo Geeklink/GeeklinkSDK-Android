@@ -1,49 +1,52 @@
 package com.example.helloworld.utils;
 
-import android.content.Context;
+import android.text.TextUtils;
 
-import com.example.helloworld.R;
-import com.gl.CustomType;
-import com.gl.DatabaseType;
+import com.gl.DatabaseDevType;
 import com.gl.DeviceMainType;
 
 public class DeviceUtil {
-    public static String getDeviceType(Context context,DeviceMainType mainType, int subType){
+    public static String getDeviceType(DeviceMainType mainType, DatabaseDevType dataBaseType){
         String type = "";
         switch (mainType){
-            case DATABASE:
-                switch (DatabaseType.values()[subType]){
+            case DATABASE_DEV:
+                switch (dataBaseType){
                     case AC:
-                        type = context.getString(R.string.text_ac);
+                        type = "空调（码库）";
                         break;
                     case TV:
-                        type = context.getString(R.string.text_tv);
+                        type = "电视（码库）";
                         break;
                     case STB:
-                        type = context.getString(R.string.text_stb);
+                        type = "机顶盒（码库）";
                         break;
                     case IPTV:
-                        type = context.getString(R.string.text_iptv);
+                    default:
+                        type = "安卓盒子（码库）";
                         break;
                 }
                 break;
-            case CUSTOM:
-                switch (CustomType.values()[subType]){
-                    case TV:
-                        type = context.getString(R.string.text_tv);
-                        break;
-                    case STB:
-                        type = context.getString(R.string.text_stb);
-                        break;
-                    case IPTV:
-                        type = context.getString(R.string.text_iptv);
-                        break;
-                    case CUSTOM:
-                        type = context.getString(R.string.text_custom);
-                        break;
-                }
+            case CUSTOM_DEV:
+                type = "自定义";
                 break;
         }
         return type;
+    }
+
+    public static boolean hasNewerVersion(String version1, String version2) {
+        if (TextUtils.isEmpty(version1) || TextUtils.isEmpty(version1)) {
+            return false;
+        }
+        String[] v1 = version1.split("\\.");
+        String[] v2 = version2.split("\\.");
+
+        for (int i = 0; i < Math.max(v1.length, v2.length); i++) {
+            int num1 = i < v1.length ? Integer.parseInt(v1[i]) : 0;
+            int num2 = i < v2.length ? Integer.parseInt(v2[i]) : 0;
+            if (num1 < num2) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -1,28 +1,27 @@
 package com.example.helloworld.ui.cotrol;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.helloworld.R;
 import com.example.helloworld.adapter.CommonAdapter;
 import com.example.helloworld.adapter.holder.ViewHolder;
 import com.example.helloworld.impl.OnItemClickListenerImp;
 import com.example.helloworld.impl.RecyclerItemClickListener;
-import com.geeklink.smartpisdk.api.ApiManager;
+import com.geeklink.smartpisdk.api.SmartPiApiManager;
 import com.geeklink.smartpisdk.bean.DBRCKeyInfo;
-import com.geeklink.smartpisdk.data.DBRCKeyType;
 import com.geeklink.smartpisdk.listener.OnControlDeviceListener;
 import com.geeklink.smartpisdk.listener.OnGetDBKeyListListener;
 import com.geeklink.smartpisdk.listener.OnGetSubDeviceStateListener;
 import com.gl.CarrierType;
-import com.gl.DatabaseType;
+import com.gl.DatabaseDevType;
 import com.gl.DeviceMainType;
 import com.gl.StateType;
 import com.gl.SubDevInfo;
@@ -31,7 +30,7 @@ import com.gl.SubStateInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DbTvStbDevControlActivity extends AppCompatActivity implements OnGetSubDeviceStateListener, OnControlDeviceListener , OnGetDBKeyListListener {
+public class DbTvStbDevControlActivity extends AppCompatActivity implements OnGetSubDeviceStateListener, OnControlDeviceListener, OnGetDBKeyListListener {
 
     private Context context;
     private RecyclerView recyclerView;
@@ -42,12 +41,10 @@ public class DbTvStbDevControlActivity extends AppCompatActivity implements OnGe
     private String md5 = "";
     private int subId ;
     private int fileId;
-    private int subType;
-    private int mainType;
     private SubDevInfo subDevInfo;
 
     private SubStateInfo subStateInfo;
-    private DatabaseType databaseType;
+    private DatabaseDevType databaseType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,17 +54,14 @@ public class DbTvStbDevControlActivity extends AppCompatActivity implements OnGe
         Intent intent = getIntent();
         md5 = intent.getStringExtra("md5");
         subId = intent.getIntExtra("subId",0);
-        subType = intent.getIntExtra("subType",0);
-        mainType = intent.getIntExtra("mainType",0);
         fileId = intent.getIntExtra("fileId",0);
+        databaseType = DatabaseDevType.values()[intent.getIntExtra("databaseType",0)];
 
-        databaseType = DatabaseType.values()[subType];
-
-        subDevInfo = new SubDevInfo(subId, DeviceMainType.DATABASE,subType,0,fileId, CarrierType.CARRIER_38,new ArrayList<Integer>(),md5,"");
+        subDevInfo = new SubDevInfo(subId, DeviceMainType.DATABASE_DEV, databaseType,0,0,fileId, CarrierType.CARRIER_38,new ArrayList<Integer>(),md5,"");
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        adapter = new CommonAdapter<DBRCKeyInfo>(context,R.layout.item_add_sub_dev, keyInfoList) {
+        adapter = new CommonAdapter<DBRCKeyInfo>(context, R.layout.item_add_sub_dev, keyInfoList) {
             @Override
             public void convert(ViewHolder holder, DBRCKeyInfo dbrcKeyInfo, int position) {
                 holder.setText(R.id.nameTv,dbrcKeyInfo.getKeyName());
@@ -78,27 +72,39 @@ public class DbTvStbDevControlActivity extends AppCompatActivity implements OnGe
             @Override
             public void onItemClick(View view, int position) {
                 super.onItemClick(view, position);
-                ApiManager.getInstance().controlSubDeviceKeyWithMd5(md5,subDevInfo,null, keyInfoList.get(position).getKeyId());
+                //发码控制设备
+                SmartPiApiManager.getInstance().controlSubDeviceKeyWithMd5(md5,subDevInfo,null, keyInfoList.get(position).getKeyId());
             }
         }));
 
-        ApiManager.getInstance().setOnControlDeviceListener(this);
-        ApiManager.getInstance().setOnGetSubDeviceStateListener(this);
-        ApiManager.getInstance().getSubDeviceStateInfo(md5,subId);
+        setListener();
+
+        //获取设备状态
+        SmartPiApiManager.getInstance().getSubDeviceStateInfo(md5,subId);
 
         initData();
     }
 
+    private void setListener() {
+        //控制回调
+        SmartPiApiManager.getInstance().setOnControlDeviceListener(this);
+        //设备状态获取回调
+        SmartPiApiManager.getInstance().setOnGetSubDeviceStateListener(this);
+        //获取码库按键列表回调
+        SmartPiApiManager.getInstance().setOnGetDBKeyListListener(this);
+    }
+
     private void initData() {
-        ApiManager.getInstance().setOnGetDBKeyListListener(this);
-        ApiManager.getInstance().getDBKeyListWithMd5(md5,databaseType,fileId);
-        keyInfoList.clear();
-        for (int i = 0 ; i < DBRCKeyType.values().length; i ++){
-            DBRCKeyType keyType = DBRCKeyType.values()[i];
-            DBRCKeyInfo keyInfo = new DBRCKeyInfo(keyType.getKeyId(),keyType.getKeyName());
-            keyInfoList.add(keyInfo);
-        }
-        adapter.notifyDataSetChanged();
+        //获取码库设备按键列表
+        SmartPiApiManager.getInstance().getDBKeyListWithMd5(md5,databaseType,fileId);
+
+//        keyInfoList.clear();
+//        for (int i = 0; i < DBRCKeyType.values().length; i ++){
+//            DBRCKeyType keyType = DBRCKeyType.values()[i];
+//            DBRCKeyInfo keyInfo = new DBRCKeyInfo(keyType.getKeyId(),keyType.getKeyName());
+//            keyInfoList.add(keyInfo);
+//        }
+//        adapter.notifyDataSetChanged();
     }
 
 
