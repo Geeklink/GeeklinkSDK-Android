@@ -219,6 +219,7 @@ public class DisinfectionLampDetailActivity extends AppCompatActivity implements
 
 
     private void setUVDisinfectionOffViews(GlDevStateInfo stateInfo) {
+        Log.e(TAG, "setUVDisinfectionOffViews: stateInfo.mUvLastTime = " + stateInfo.mUvLastTime);
         if (stateInfo.mUvLastTime == 0) {
             disinfectionLampStatusTv.setText(String.format(context.getString(R.string.text_latest_disinfection_time), context.getString(R.string.text_undisinfect)));
          } else if (stateInfo.mUvLastTime == 1) {

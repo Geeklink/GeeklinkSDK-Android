@@ -113,8 +113,10 @@ public class MainDeviceListActivity extends AppCompatActivity {
 //        mainDevices.add(deviceInfo);
 
         adapter.notifyDataSetChanged();
-        //连接所有设备
-        ApiManager.getInstance().linkAllMainDevice((ArrayList<DeviceInfo>) mainDevices);
+        if(mainDevices.size() > 0) {
+            //连接所有设备
+            ApiManager.getInstance().linkAllMainDevice((ArrayList<DeviceInfo>) mainDevices);
+        }
     }
 
     @Override
